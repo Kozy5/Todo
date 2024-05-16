@@ -1,8 +1,8 @@
-package com.teamsparta.todo.domain.todo.service
+package com.teamsparta.todo.domain.todos.service
 
-import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
-import com.teamsparta.todo.domain.todo.dto.TodoResponse
-import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
+import com.teamsparta.todo.domain.todos.dto.CreateTodoRequest
+import com.teamsparta.todo.domain.todos.dto.TodoResponse
+import com.teamsparta.todo.domain.todos.dto.UpdateTodoRequest
 
 
 interface TodoService {

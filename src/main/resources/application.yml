@@ -1,16 +1,17 @@
 spring:
   jpa:
+    open-in-view: false
     properties:
       hibernate:
         format_sql: true
         highlight_sql: true
-
-
+  application:
+    name: "todo"
 logging:
   level:
     org:
       hibernate:
-        SQL : debug
+        SQL: debug
         orm:
           jdbc:
             bind: trace

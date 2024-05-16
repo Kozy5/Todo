@@ -1,21 +1,17 @@
-package com.teamsparta.todo.domain.todo.controller
+package com.teamsparta.todo.domain.todos.controller
 
-import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
-import com.teamsparta.todo.domain.todo.dto.TodoResponse
-import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
-import com.teamsparta.todo.domain.todo.exception.ModelNotFoundException
-import com.teamsparta.todo.domain.todo.service.TodoService
-import org.springframework.beans.factory.annotation.Qualifier
+import com.teamsparta.todo.domain.todos.dto.CreateTodoRequest
+import com.teamsparta.todo.domain.todos.dto.TodoResponse
+import com.teamsparta.todo.domain.todos.dto.UpdateTodoRequest
+import com.teamsparta.todo.domain.todos.service.TodoService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.HandlerExceptionResolver
 
-@RestController
 @RequestMapping("/todos")
+@RestController
 class TodoController(
-    private val todoService: TodoService,
-    @Qualifier("handlerExceptionResolver") private val handlerExceptionResolver: HandlerExceptionResolver
+    val todoService: TodoService
 ) {
     @GetMapping
     fun getTodos():ResponseEntity<List<TodoResponse>>{
@@ -35,6 +31,7 @@ class TodoController(
     }
     @DeleteMapping("/{todoId}")
     fun deleteTodo(@PathVariable todoId:Long):ResponseEntity<Unit>{
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.deleteTodo(todoId))
+        todoService.deleteTodo(todoId)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
     }
 }

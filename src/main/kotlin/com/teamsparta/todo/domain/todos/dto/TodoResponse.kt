@@ -1,5 +1,7 @@
-package com.teamsparta.todo.domain.todo.dto
+package com.teamsparta.todo.domain.todos.dto
 
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.Date
 
 data class TodoResponse(
@@ -7,5 +9,5 @@ data class TodoResponse(
     val title: String,
     val content: String?,
     val author: String,
-    val writeDate:Date
+    val writeDate: Date?
 )
