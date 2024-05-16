@@ -3,6 +3,7 @@ package com.teamsparta.todo.domain.todo.service
 import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
 import com.teamsparta.todo.domain.todo.dto.TodoResponse
 import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
+import com.teamsparta.todo.domain.todo.exception.ModelNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,7 +16,8 @@ class TodoServiceImpl:TodoService {
 
     override fun getTodoById(todoId: Long): TodoResponse {
 //      TODO : DB에서 todoId에 해당하는 Todo를 가져와서 TodoReponse로 변환후 반환
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        throw ModelNotFoundException(modelName = "Todo",id = 1L)
     }
 
     @Transactional
