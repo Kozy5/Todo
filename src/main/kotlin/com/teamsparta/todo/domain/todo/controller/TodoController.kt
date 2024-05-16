@@ -37,11 +37,4 @@ class TodoController(
     fun deleteTodo(@PathVariable todoId:Long):ResponseEntity<Unit>{
         return ResponseEntity.status(HttpStatus.OK).body(todoService.deleteTodo(todoId))
     }
-
-    @ExceptionHandler(ModelNotFoundException::class)
-    fun handleModelNotFoundException(e:ModelNotFoundException): ResponseEntity<Unit> {
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .build()
-    }
 }
