@@ -7,6 +7,5 @@ import java.util.Date
 data class CreateTodoRequest(
     val title: String,
     val content: String?,
-    val author: String,
-    val writeDate: Date?
+    val author: String
 )

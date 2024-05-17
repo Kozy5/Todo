@@ -9,5 +9,5 @@ data class TodoResponse(
     val title: String,
     val content: String?,
     val author: String,
-    val writeDate: Date?
+    val writeDate: LocalDateTime
 )

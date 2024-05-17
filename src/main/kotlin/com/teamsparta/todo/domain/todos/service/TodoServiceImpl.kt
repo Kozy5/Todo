@@ -31,8 +31,7 @@ class TodoServiceImpl(
         val todo = Todo(
             title = request.title,
             content = request.content,
-            author = request.author,
-            writeDate = request.writeDate
+            author = request.author
         )
         return todoRepository.save(todo).toResponse()
     }
