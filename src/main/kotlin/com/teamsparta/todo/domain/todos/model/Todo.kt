@@ -8,22 +8,21 @@ import java.time.LocalDateTime
 @Table(name = "todo")
 class Todo(
     @Column(name = "title")
-    var title: String = "",
+    var title: String,
 
     @Column(name = "content")
-    var content: String? = null,
+    var content: String?,
 
     @Column(name = "write_date")
-    var writeDate: LocalDateTime = LocalDateTime.now(),
+    var writeDate: LocalDateTime,
 
     @Column(name = "author")
-    var author: String = ""
+    var author: String
 
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-
 }
 fun Todo.toResponse(): TodoResponse {
     return TodoResponse(
