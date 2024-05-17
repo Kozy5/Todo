@@ -11,7 +11,7 @@ class ExceptionHandler {
     @ExceptionHandler(TodoNotFoundException::class)
     fun handleModelNotFoundException(e:TodoNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
+            .status(HttpStatus.NOT_FOUND)
             .body(ErrorResponse(message = e.message))
     }
 }
