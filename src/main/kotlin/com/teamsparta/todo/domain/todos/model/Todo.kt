@@ -2,11 +2,7 @@ package com.teamsparta.todo.domain.todos.model
 
 import com.teamsparta.todo.domain.todos.dto.TodoResponse
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.Date
 
 @Entity
 @Table(name = "todo")
