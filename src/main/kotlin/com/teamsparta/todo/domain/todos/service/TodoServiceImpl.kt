@@ -10,6 +10,8 @@ import com.teamsparta.todo.domain.todos.repository.TodoRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 @Service
 class TodoServiceImpl(
@@ -17,8 +19,9 @@ class TodoServiceImpl(
 ):TodoService {
 
 
-    override fun getAllTodoList(): List<TodoResponse> {
-        return todoRepository.findAll().map{it.toResponse()}
+    override fun getAllTodoList(pageable: Pageable): Page<TodoResponse> {
+        val pageTodo: Page<Todo> = todoRepository.findAll(pageable)
+        return pageTodo.map{it.toResponse()}
     }
 
     override fun getTodoById(todoId: Long): TodoResponse {
