@@ -66,7 +66,7 @@
 ![image](https://github.com/Kozy5/Todo/assets/96171308/ba602e2e-b4b3-4bed-a23a-0de2c0391bb5)
 
 ## API 명세서
-|Description|Method|URL|Request(body)|Response
+|Description|Method|URI|Request(body)|Response
 |---|---|---|---|---|
 |Todo 생성|`POST`|`/todos`|`CreateTodoRequest`|`TodoResponse`|
 |Todo 목록 조회|`GET`|`/todos`||`Page<TodoResponse>`|
