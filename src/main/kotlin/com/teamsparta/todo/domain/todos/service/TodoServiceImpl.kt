@@ -16,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TodoServiceImpl(
     private val todoRepository: TodoRepository
-):TodoService {
+) : TodoService {
 
 
     override fun getAllTodoList(pageable: Pageable): Page<TodoResponse> {
         val pageTodo: Page<Todo> = todoRepository.findAll(pageable)
-        return pageTodo.map{it.toResponse()}
+        return pageTodo.map { it.toResponse() }
     }
 
     override fun getTodoById(todoId: Long): TodoResponse {

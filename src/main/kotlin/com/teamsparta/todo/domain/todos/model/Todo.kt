@@ -24,9 +24,10 @@ class Todo(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 }
+
 fun Todo.toResponse(): TodoResponse {
     return TodoResponse(
-        id= id!!,
+        id = id!!,
         title = title,
         content = content,
         writeDate = writeDate,

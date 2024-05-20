@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class ExceptionHandler {
     @ExceptionHandler(TodoNotFoundException::class)
-    fun handleModelNotFoundException(e:TodoNotFoundException): ResponseEntity<ErrorResponse> {
+    fun handleModelNotFoundException(e: TodoNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(ErrorResponse(message = e.message))

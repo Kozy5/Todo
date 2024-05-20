@@ -8,5 +8,5 @@ data class CreateTodoRequest(
     val title: String,
     val content: String?,
     val author: String,
-    val writeDate:LocalDateTime
+    val writeDate: LocalDateTime
 )
