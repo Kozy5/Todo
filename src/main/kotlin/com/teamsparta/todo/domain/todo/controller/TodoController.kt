@@ -1,9 +1,9 @@
-package com.teamsparta.todo.domain.todos.controller
+package com.teamsparta.todo.domain.todo.controller
 
-import com.teamsparta.todo.domain.todos.dto.CreateTodoRequest
-import com.teamsparta.todo.domain.todos.dto.TodoResponse
-import com.teamsparta.todo.domain.todos.dto.UpdateTodoRequest
-import com.teamsparta.todo.domain.todos.service.TodoService
+import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
+import com.teamsparta.todo.domain.todo.dto.TodoResponse
+import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
+import com.teamsparta.todo.domain.todo.service.TodoService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault

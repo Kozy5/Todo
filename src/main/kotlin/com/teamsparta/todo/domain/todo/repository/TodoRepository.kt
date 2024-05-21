@@ -1,6 +1,6 @@
-package com.teamsparta.todo.domain.todos.repository
+package com.teamsparta.todo.domain.todo.repository
 
-import com.teamsparta.todo.domain.todos.model.Todo
+import com.teamsparta.todo.domain.todo.model.Todo
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface TodoRepository : JpaRepository<Todo, Long> {
