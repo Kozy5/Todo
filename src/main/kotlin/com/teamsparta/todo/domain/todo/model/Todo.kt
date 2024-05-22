@@ -12,8 +12,7 @@ class Todo(
     var title: String,
 
     @Column(name = "content")
-    var content: String?,
-
+    var content: String? = null,
 
     @Column(name = "author")
     var author: String,
@@ -40,4 +39,3 @@ fun Todo.toResponse(): TodoResponse {
         writeDate = writeDate
     )
 }
-
