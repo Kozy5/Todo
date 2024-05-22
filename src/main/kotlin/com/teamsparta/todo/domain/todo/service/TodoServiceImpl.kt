@@ -1,17 +1,21 @@
-package com.teamsparta.todo.domain.todos.service
+package com.teamsparta.todo.domain.todo.service
 
-import com.teamsparta.todo.domain.todos.dto.CreateTodoRequest
-import com.teamsparta.todo.domain.todos.dto.TodoResponse
-import com.teamsparta.todo.domain.todos.dto.UpdateTodoRequest
-import com.teamsparta.todo.domain.todos.exception.TodoNotFoundException
-import com.teamsparta.todo.domain.todos.model.Todo
-import com.teamsparta.todo.domain.todos.model.toResponse
-import com.teamsparta.todo.domain.todos.repository.TodoRepository
+import com.teamsparta.todo.domain.comment.dto.CommentResponse
+import com.teamsparta.todo.domain.comment.dto.CreateCommentRequest
+import com.teamsparta.todo.domain.comment.dto.UpdateCommentRequest
+import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
+import com.teamsparta.todo.domain.todo.dto.TodoResponse
+import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
+import com.teamsparta.todo.domain.todo.exception.TodoNotFoundException
+import com.teamsparta.todo.domain.todo.model.Todo
+import com.teamsparta.todo.domain.todo.model.toResponse
+import com.teamsparta.todo.domain.todo.repository.TodoRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class TodoServiceImpl(
@@ -29,13 +33,12 @@ class TodoServiceImpl(
         return todo.toResponse()
     }
 
-    @Transactional
+
     override fun createTodo(request: CreateTodoRequest): TodoResponse {
         val todo = Todo(
             title = request.title,
             content = request.content,
-            author = request.author,
-            writeDate = request.writeDate
+            author = request.author
         )
         return todoRepository.save(todo).toResponse()
     }
@@ -46,12 +49,29 @@ class TodoServiceImpl(
         todo.title = request.title
         todo.content = request.content
         todo.author = request.author
+        todo.writeDate = LocalDateTime.now()
         return todoRepository.save(todo).toResponse()
     }
 
-    @Transactional
+
     override fun deleteTodo(todoId: Long) {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw TodoNotFoundException(todoId)
         todoRepository.delete(todo)
+    }
+
+    override fun getAllCommentList(todoId: Long, pageable: Pageable): Page<TodoResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override fun createComment(todoId: Long, request: CreateCommentRequest): CommentResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateComment(todoId: Long, commentId: Long, request: UpdateCommentRequest): CommentResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteComment(todoId: Long, commentId: Long) {
+        TODO("Not yet implemented")
     }
 }
