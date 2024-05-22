@@ -6,7 +6,8 @@ import com.teamsparta.todo.domain.comment.dto.UpdateCommentRequest
 import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
 import com.teamsparta.todo.domain.todo.dto.TodoResponse
 import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
-import com.teamsparta.todo.domain.todo.exception.TodoNotFoundException
+import com.teamsparta.todo.domain.exception.TodoNotFoundException
+import com.teamsparta.todo.domain.todo.dto.IsCompleteTodoRequest
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.todo.model.toResponse
 import com.teamsparta.todo.domain.todo.repository.TodoRepository
@@ -59,19 +60,10 @@ class TodoServiceImpl(
         todoRepository.delete(todo)
     }
 
-    override fun getAllCommentList(todoId: Long, pageable: Pageable): Page<TodoResponse> {
-        TODO("Not yet implemented")
-    }
-
-    override fun createComment(todoId: Long, request: CreateCommentRequest): CommentResponse {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateComment(todoId: Long, commentId: Long, request: UpdateCommentRequest): CommentResponse {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteComment(todoId: Long, commentId: Long) {
-        TODO("Not yet implemented")
+    @Transactional
+    override fun isCompleteTodo(todoId:Long, request: IsCompleteTodoRequest):TodoResponse{
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw TodoNotFoundException(todoId)
+        todo.status = request.status
+        return todo.toResponse()
     }
 }
