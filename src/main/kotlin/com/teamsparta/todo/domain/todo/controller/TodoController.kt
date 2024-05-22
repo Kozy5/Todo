@@ -1,6 +1,7 @@
 package com.teamsparta.todo.domain.todo.controller
 
 import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
+import com.teamsparta.todo.domain.todo.dto.IsCompleteTodoRequest
 import com.teamsparta.todo.domain.todo.dto.TodoResponse
 import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
 import com.teamsparta.todo.domain.todo.service.TodoService
@@ -33,18 +34,23 @@ class TodoController(
     }
 
     @PostMapping
-    fun createTodo(@RequestBody request: CreateTodoRequest): ResponseEntity<TodoResponse> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(request))
+    fun createTodo(@RequestBody createTodoRequest: CreateTodoRequest): ResponseEntity<TodoResponse> {
+        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(createTodoRequest))
     }
 
     @PutMapping("/{todoId}")
-    fun updateTodo(@PathVariable todoId: Long, @RequestBody request: UpdateTodoRequest): ResponseEntity<TodoResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, request))
+    fun updateTodo(@PathVariable todoId: Long, @RequestBody updateTodoRequest: UpdateTodoRequest): ResponseEntity<TodoResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest))
     }
 
     @DeleteMapping("/{todoId}")
     fun deleteTodo(@PathVariable todoId: Long): ResponseEntity<Unit> {
         todoService.deleteTodo(todoId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
+
+    @PatchMapping("/{todoId}")
+    fun isCompleteTodo(@PathVariable todoId: Long, @RequestBody isCompleteTodoRequest:IsCompleteTodoRequest): ResponseEntity<TodoResponse>{
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.isCompleteTodo(todoId,isCompleteTodoRequest))
     }
 }
