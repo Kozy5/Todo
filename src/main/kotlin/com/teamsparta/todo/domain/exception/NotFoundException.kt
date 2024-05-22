@@ -1,4 +1,4 @@
-package com.teamsparta.todo.domain.todo.exception
+package com.teamsparta.todo.domain.exception
 
 
 data class TodoNotFoundException(val todoId: Long):RuntimeException(
