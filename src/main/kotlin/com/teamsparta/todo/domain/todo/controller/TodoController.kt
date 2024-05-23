@@ -2,6 +2,7 @@ package com.teamsparta.todo.domain.todo.controller
 
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.service.TodoService
+import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -32,14 +33,14 @@ class TodoController(
     }
 
     @PostMapping
-    fun createTodo(@RequestBody createTodoRequest: CreateTodoRequest): ResponseEntity<TodoResponse> {
+    fun createTodo(@Valid @RequestBody createTodoRequest: CreateTodoRequest): ResponseEntity<TodoResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(createTodoRequest))
     }
 
     @PutMapping("/{todoId}")
     fun updateTodo(
         @PathVariable todoId: Long,
-        @RequestBody updateTodoRequest: UpdateTodoRequest
+        @Valid @RequestBody updateTodoRequest: UpdateTodoRequest
     ): ResponseEntity<TodoResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest))
     }
