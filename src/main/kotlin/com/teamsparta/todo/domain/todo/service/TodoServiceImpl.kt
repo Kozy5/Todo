@@ -30,7 +30,7 @@ class TodoServiceImpl(
             return pageTodo.map { it.toResponse() }
         }
     }
-
+    @Transactional
     override fun getTodoByIdWithComment(todoId: Long): TodoWithCommentResponse {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
         return todo.toResponseWithComments()

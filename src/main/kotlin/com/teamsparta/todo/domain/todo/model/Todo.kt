@@ -27,7 +27,7 @@ class Todo(
     @Column(name = "write_date")
     var writeDate: LocalDateTime = LocalDateTime.now(),
 
-    @OneToMany(mappedBy = "todo", fetch = FetchType.EAGER,cascade = [CascadeType.ALL], orphanRemoval = true,)
+    @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY,cascade = [CascadeType.ALL], orphanRemoval = true,)
     val comments: MutableList<Comment> = mutableListOf()
 
     ) {
