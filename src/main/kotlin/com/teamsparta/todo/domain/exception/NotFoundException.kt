@@ -1,6 +1,6 @@
 package com.teamsparta.todo.domain.exception
 
 
-data class TodoNotFoundException(val todoId: Long):RuntimeException(
-    "  not fount with given id: $todoId"
+data class NotFoundException(val id: Long):RuntimeException(
+    "  not fount with given id: $id"
 )
