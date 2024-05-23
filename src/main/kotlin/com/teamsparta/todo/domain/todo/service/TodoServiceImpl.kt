@@ -21,17 +21,20 @@ class TodoServiceImpl(
 ) : TodoService {
 
 
-    override fun getAllTodoList(pageable: Pageable): Page<TodoResponse> {
-        val pageTodo: Page<Todo> = todoRepository.findAll(pageable)
-        return pageTodo.map { it.toResponse() }
+    override fun getAllTodoList(author: String?, pageable: Pageable): Page<TodoResponse> {
+        if (author != null) {
+            val pageTodo: Page<Todo> = todoRepository.findByAuthor(author, pageable)
+            return pageTodo.map { it.toResponse() }
+        } else {
+            val pageTodo: Page<Todo> = todoRepository.findAll(pageable)
+            return pageTodo.map { it.toResponse() }
+        }
     }
 
     override fun getTodoByIdWithComment(todoId: Long): TodoWithCommentResponse {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
         return todo.toResponseWithComments()
     }
-
-
 
 
     override fun createTodo(request: CreateTodoRequest): TodoResponse {
@@ -60,7 +63,7 @@ class TodoServiceImpl(
     }
 
     @Transactional
-    override fun isCompleteTodo(todoId:Long, request: IsCompleteTodoRequest):TodoResponse{
+    override fun isCompleteTodo(todoId: Long, request: IsCompleteTodoRequest): TodoResponse {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
         todo.status = request.status
         return todo.toResponse()

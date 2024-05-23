@@ -18,11 +18,12 @@ class TodoController(
 ) {
     @GetMapping
     fun getTodos(
+        @RequestParam(required = false) author: String?,
         @ParameterObject
         @PageableDefault(size = 10, sort = ["writeDate"], direction = Sort.Direction.DESC)
-        pageable: Pageable,
+        pageable: Pageable
     ): ResponseEntity<Page<TodoResponse>> {
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(pageable))
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(author, pageable))
     }
 
     @GetMapping("/{todoId}")
@@ -36,7 +37,10 @@ class TodoController(
     }
 
     @PutMapping("/{todoId}")
-    fun updateTodo(@PathVariable todoId: Long, @RequestBody updateTodoRequest: UpdateTodoRequest): ResponseEntity<TodoResponse> {
+    fun updateTodo(
+        @PathVariable todoId: Long,
+        @RequestBody updateTodoRequest: UpdateTodoRequest
+    ): ResponseEntity<TodoResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest))
     }
 
@@ -47,7 +51,10 @@ class TodoController(
     }
 
     @PatchMapping("/{todoId}")
-    fun isCompleteTodo(@PathVariable todoId: Long, @RequestBody isCompleteTodoRequest:IsCompleteTodoRequest): ResponseEntity<TodoResponse>{
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.isCompleteTodo(todoId,isCompleteTodoRequest))
+    fun isCompleteTodo(
+        @PathVariable todoId: Long,
+        @RequestBody isCompleteTodoRequest: IsCompleteTodoRequest
+    ): ResponseEntity<TodoResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.isCompleteTodo(todoId, isCompleteTodoRequest))
     }
 }
