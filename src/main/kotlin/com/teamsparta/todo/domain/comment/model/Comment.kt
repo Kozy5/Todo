@@ -1,6 +1,7 @@
 package com.teamsparta.todo.domain.comment.model
 
 import com.teamsparta.todo.domain.comment.dto.CommentResponse
+import com.teamsparta.todo.domain.todo.model.Todo
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -9,16 +10,19 @@ import java.time.LocalDateTime
 class Comment(
 
     @Column
-    val content: String,
+    var content: String,
 
     @Column
-    val author: String,
+    var author: String,
 
     @Column
     val password: String,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todo_id")
+    val todo: Todo
 
-) {
+    ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null

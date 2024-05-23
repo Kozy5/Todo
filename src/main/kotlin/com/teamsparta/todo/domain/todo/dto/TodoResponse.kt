@@ -1,5 +1,6 @@
 package com.teamsparta.todo.domain.todo.dto
 
+import com.teamsparta.todo.domain.comment.model.Comment
 import java.time.LocalDateTime
 
 

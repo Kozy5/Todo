@@ -1,9 +1,6 @@
 package com.teamsparta.todo.domain.todo.controller
 
-import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
-import com.teamsparta.todo.domain.todo.dto.IsCompleteTodoRequest
-import com.teamsparta.todo.domain.todo.dto.TodoResponse
-import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
+import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.service.TodoService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Sort
@@ -29,8 +26,8 @@ class TodoController(
     }
 
     @GetMapping("/{todoId}")
-    fun getTodo(@PathVariable todoId: Long): ResponseEntity<TodoResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.getTodoById(todoId))
+    fun getTodo(@PathVariable todoId: Long): ResponseEntity<TodoWithCommentResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.getTodoByIdWithComment(todoId))
     }
 
     @PostMapping
