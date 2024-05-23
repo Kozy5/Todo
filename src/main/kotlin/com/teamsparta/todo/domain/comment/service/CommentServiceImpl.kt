@@ -12,6 +12,7 @@ import com.teamsparta.todo.domain.todo.repository.TodoRepository
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CommentServiceImpl(
@@ -31,12 +32,14 @@ class CommentServiceImpl(
         return commentRepository.save(comment).toResponse()
     }
 
+    @Transactional
     override fun updateComment(todoId: Long, commentId: Long, request: UpdateCommentRequest): CommentResponse {
         val comment = commentRepository.findByTodoIdAndId(todoId, commentId) ?: throw NotFoundException()
         if (!comment.isValidAuthor(request.author) || !comment.isValidPassword(request.password)) throw InformationDifferentException()
         comment.content = request.content
         return commentRepository.save(comment).toResponse()
     }
+
 
     override fun deleteComment(todoId: Long, commentId: Long, request: DeleteCommentRequest) {
         val comment = commentRepository.findByTodoIdAndId(todoId, commentId) ?: throw NotFoundException()
