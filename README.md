@@ -52,14 +52,14 @@
     - `완료 여부` 기본값은 FALSE
     - 완료처리 한 할일카드는 `완료 여부`필드 TRUE
       
-# 기본값 FALSE
+##### 기본값 FALSE
 ```kotlin
 package com.teamsparta.todo.domain.todo.model
 
 @Column(name = "status")
     var status: Boolean = false
 ```
-# 완료처리 한 할일카드는 `완료 여부`필드 TRUE
+##### 완료처리 한 할일카드는 `완료 여부`필드 TRUE
 - Service
 ```kotlin
 package com.teamsparta.todo.domain.todo.service
@@ -90,7 +90,7 @@ package com.teamsparta.todo.domain.todo.controller
     - 선택한 할 일이 DB에 저장되어 있다면 댓글 등록, 반환
     - 응답에서 `비밀번호`는 제외하고 반환
 
-# 댓글 작성 시 `작성자 이름`과 `비밀번호`를 함께 받기
+##### 댓글 작성 시 `작성자 이름`과 `비밀번호`를 함께 받기
 - Request DTO
 ```kotlin
 package com.teamsparta.todo.domain.comment.dto
@@ -102,7 +102,7 @@ data class CreateCommentRequest(
 )
 ```
 
-# 선택한 할 일의 DB 저장 유무 확인,선택한 할 일이 DB에 저장되어 있다면 댓글 등록, 반환
+##### 선택한 할 일의 DB 저장 유무 확인,선택한 할 일이 DB에 저장되어 있다면 댓글 등록, 반환
 - Service
 ```kotlin
 package com.teamsparta.todo.domain.comment.service
@@ -132,7 +132,7 @@ package com.teamsparta.todo.domain.comment.controller
             .body(commentService.createComment(todoId, createCommentRequest))
     }
 ```
-# 응답에서 `비밀번호`는 제외하고 반환
+##### 응답에서 `비밀번호`는 제외하고 반환
 - Response DTO
 ```kotlin
 package com.teamsparta.todo.domain.comment.dto
@@ -148,7 +148,7 @@ data class CommentResponse(
     - 선택한 댓글의 DB 저장 유무 확인
     - 선택한 댓글이 있으면서 `작성자 이름`과 `비밀번호`를 함께 받아 저장된 값과 일치하면 댓글 수정, 반환
       
-# 선택한 댓글의 DB 저장 유무 확인, 선택한 댓글이 있으면서 `작성자 이름`과 `비밀번호`를 함께 받아 저장된 값과 일치하면 댓글 수정, 반환
+##### 선택한 댓글의 DB 저장 유무 확인, 선택한 댓글이 있으면서 `작성자 이름`과 `비밀번호`를 함께 받아 저장된 값과 일치하면 댓글 수정, 반환
 - Service
 ```kotlin
 package com.teamsparta.todo.domain.comment.service
@@ -179,7 +179,7 @@ package com.teamsparta.todo.domain.comment.controller
     - 선택한 댓글의 DB 저장 유무 확인
     - 선택한 댓글이 있으면서 `작성자 이름`과 `비밀번호`를 함께 받아 저장된 값과 일치하면 댓글 삭제하고 Client 로 성공했다는 메시지, 상태코드 반환하기
       
-# 선택한 댓글의 DB 저장 유무 확인, 선택한 댓글이 있으면서 `작성자 이름`과 `비밀번호`를 함께 받아 저장된 값과 일치하면 댓글 삭제하고 Client 로 성공했다는 메시지, 상태코드 반환하기
+##### 선택한 댓글의 DB 저장 유무 확인, 선택한 댓글이 있으면서 `작성자 이름`과 `비밀번호`를 함께 받아 저장된 값과 일치하면 댓글 삭제하고 Client 로 성공했다는 메시지, 상태코드 반환하기
 - Service
 ```kotlin
 package com.teamsparta.todo.domain.comment.service
@@ -210,7 +210,7 @@ package com.teamsparta.todo.domain.comment.controller
     - 연관되지 않은 댓글은 포함 X
     - 할 일 목록 api에는 추가 X
 
-# 연관 관계
+##### 연관 관계
 - 할 일 Entity
 ```kotlin
 package com.teamsparta.todo.domain.todo.model
@@ -239,7 +239,7 @@ class Comment(
 )
 ```
 
-# 선택한 할 일 조회 기능 응답에 연관된 댓글 목록 추가하기
+##### 선택한 할 일 조회 기능 응답에 연관된 댓글 목록 추가하기
  - 할일 Entity 확장함수
 ```kotlin
 package com.teamsparta.todo.domain.todo.model
@@ -268,7 +268,7 @@ fun Todo.toResponseWithComments():TodoWithCommentResponse{
     - api를 요청할 때 정렬 기준(오름차순, 내림차순)을 포함하기
     - 정렬 기준을 통해 정렬한 할 일 목록 반환
      
-# 작성일 기준 내림차순,오름차순 Request 받기
+##### 작성일 기준 내림차순,오름차순 Request 받기
 - Controller
 ```kotlin
 package com.teamsparta.todo.domain.todo.controller
