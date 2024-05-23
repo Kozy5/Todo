@@ -1,15 +1,11 @@
 package com.teamsparta.todo.domain.todo.service
 
-import com.teamsparta.todo.domain.comment.dto.CommentResponse
-import com.teamsparta.todo.domain.comment.dto.CreateCommentRequest
-import com.teamsparta.todo.domain.comment.dto.UpdateCommentRequest
-import com.teamsparta.todo.domain.todo.dto.CreateTodoRequest
-import com.teamsparta.todo.domain.todo.dto.TodoResponse
-import com.teamsparta.todo.domain.todo.dto.UpdateTodoRequest
-import com.teamsparta.todo.domain.exception.TodoNotFoundException
-import com.teamsparta.todo.domain.todo.dto.IsCompleteTodoRequest
+import com.teamsparta.todo.domain.comment.repository.CommentRepository
+import com.teamsparta.todo.domain.exception.NotFoundException
+import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.todo.model.toResponse
+import com.teamsparta.todo.domain.todo.model.toResponseWithComments
 import com.teamsparta.todo.domain.todo.repository.TodoRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -20,7 +16,8 @@ import java.time.LocalDateTime
 
 @Service
 class TodoServiceImpl(
-    private val todoRepository: TodoRepository
+    private val todoRepository: TodoRepository,
+    private val commentRepository: CommentRepository
 ) : TodoService {
 
 
@@ -29,10 +26,12 @@ class TodoServiceImpl(
         return pageTodo.map { it.toResponse() }
     }
 
-    override fun getTodoById(todoId: Long): TodoResponse {
-        val todo = todoRepository.findByIdOrNull(todoId) ?: throw TodoNotFoundException(todoId)
-        return todo.toResponse()
+    override fun getTodoByIdWithComment(todoId: Long): TodoWithCommentResponse {
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
+        return todo.toResponseWithComments()
     }
+
+
 
 
     override fun createTodo(request: CreateTodoRequest): TodoResponse {
@@ -46,7 +45,7 @@ class TodoServiceImpl(
 
     @Transactional
     override fun updateTodo(todoId: Long, request: UpdateTodoRequest): TodoResponse {
-        val todo = todoRepository.findByIdOrNull(todoId) ?: throw TodoNotFoundException(todoId)
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
         todo.title = request.title
         todo.content = request.content
         todo.author = request.author
@@ -56,13 +55,13 @@ class TodoServiceImpl(
 
 
     override fun deleteTodo(todoId: Long) {
-        val todo = todoRepository.findByIdOrNull(todoId) ?: throw TodoNotFoundException(todoId)
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
         todoRepository.delete(todo)
     }
 
     @Transactional
     override fun isCompleteTodo(todoId:Long, request: IsCompleteTodoRequest):TodoResponse{
-        val todo = todoRepository.findByIdOrNull(todoId) ?: throw TodoNotFoundException(todoId)
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
         todo.status = request.status
         return todo.toResponse()
     }

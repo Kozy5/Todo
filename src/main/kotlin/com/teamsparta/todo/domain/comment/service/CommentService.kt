@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable
 
 interface CommentService {
 
-    fun createComment(request: CreateCommentRequest): CommentResponse
+    fun createComment(todoId:Long,request: CreateCommentRequest): CommentResponse
 
-    fun updateComment(commentId: Long, request: UpdateCommentRequest): CommentResponse
+    fun updateComment(todoId:Long,commentId: Long, request: UpdateCommentRequest): CommentResponse
 
-    fun deleteComment(commentId: Long, request: DeleteCommentRequest)
+    fun deleteComment(todoId:Long,commentId: Long, request: DeleteCommentRequest)
 }

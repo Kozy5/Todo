@@ -7,27 +7,40 @@ import com.teamsparta.todo.domain.comment.dto.UpdateCommentRequest
 import com.teamsparta.todo.domain.comment.model.Comment
 import com.teamsparta.todo.domain.comment.model.toResponse
 import com.teamsparta.todo.domain.comment.repository.CommentRepository
-import com.teamsparta.todo.domain.exception.PasswordDifferentException
+import com.teamsparta.todo.domain.exception.InformationDifferentException
+import com.teamsparta.todo.domain.todo.repository.TodoRepository
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class CommentServiceImpl(
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val todoRepository: TodoRepository
 ) : CommentService {
 
-    override fun createComment(request: CreateCommentRequest): CommentResponse {
-        TODO()
+    override fun createComment(todoId: Long, request: CreateCommentRequest): CommentResponse {
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException()
+        val comment = Comment(
+            content = request.content,
+            author = request.author,
+            password = request.password,
+            todo = todo
+        )
+        todo.comments.add(comment)
+        return commentRepository.save(comment).toResponse()
     }
 
-    override fun updateComment(commentId: Long, request: UpdateCommentRequest): CommentResponse {
-        TODO()
+    override fun updateComment(todoId: Long, commentId: Long, request: UpdateCommentRequest): CommentResponse {
+        val comment = commentRepository.findByTodoIdAndId(todoId, commentId) ?: throw NotFoundException()
+        if (!comment.isValidAuthor(request.author) || !comment.isValidPassword(request.password)) throw InformationDifferentException()
+        comment.content = request.content
+        return commentRepository.save(comment).toResponse()
     }
 
-    override fun deleteComment(commentId: Long, request: DeleteCommentRequest) {
-        TODO("Not yet implemented")
+    override fun deleteComment(todoId: Long, commentId: Long, request: DeleteCommentRequest) {
+        val comment = commentRepository.findByTodoIdAndId(todoId, commentId) ?: throw NotFoundException()
+        if (!comment.isValidAuthor(request.author) || !comment.isValidPassword(request.password)) throw InformationDifferentException()
+        commentRepository.delete(comment)
     }
 }
