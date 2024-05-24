@@ -418,7 +418,8 @@ package com.teamsparta.todo.domain.todo.controller
    - Service: CRUD 기능 구현
    
 ## Entity Relationship Diagram(ERD)
-![image](https://github.com/Kozy5/Todo/assets/96171308/ba602e2e-b4b3-4bed-a23a-0de2c0391bb5)
+![image](https://github.com/Kozy5/Todo/assets/96171308/f22945ba-fc65-49d4-a97a-289879a78fff)
+
 
 ## API 명세서
 |Description|Method|URI|Request(body)|Response
@@ -428,4 +429,7 @@ package com.teamsparta.todo.domain.todo.controller
 |Todo 단건 조회|`GET`|`/todos/{todoId}`||`TodoResponse`|
 |Todo 수정|`PUT`|`/todos/{todoId}`|`UpdateTodoRequest`|`TodoResponse`|
 |Todo 삭제|`DELETE`|`/todos/{todoId}`|||
+|Comment 생성|`POST`|`/comments`|`CreateCommentRequest`|`CommentResponse`|
+|Comment 수정|`PUT`|`/comments/{commentsId}`|`UpdateCommentRequest`|`CommentResponse`|
+|Comment 삭제|`DELETE`|`/comments/{commentsId}`|||
 
