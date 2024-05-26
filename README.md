@@ -429,7 +429,7 @@ package com.teamsparta.todo.domain.todo.controller
 |Todo 단건 조회|`GET`|`/todos/{todoId}`||`TodoResponse`|
 |Todo 수정|`PUT`|`/todos/{todoId}`|`UpdateTodoRequest`|`TodoResponse`|
 |Todo 삭제|`DELETE`|`/todos/{todoId}`|||
-|Comment 생성|`POST`|`/comments`|`CreateCommentRequest`|`CommentResponse`|
-|Comment 수정|`PUT`|`/comments/{commentsId}`|`UpdateCommentRequest`|`CommentResponse`|
-|Comment 삭제|`DELETE`|`/comments/{commentsId}`|||
+|Comment 생성|`POST`|`/todos/{todoId}/comments`|`CreateCommentRequest`|`CommentResponse`|
+|Comment 수정|`PUT`|`/todos/{todoId}/comments/{commentsId}`|`UpdateCommentRequest`|`CommentResponse`|
+|Comment 삭제|`DELETE`|`/todos/{todoId}/comments/{commentsId}`|||
 
