@@ -1,6 +1,5 @@
 package com.teamsparta.todo.domain.todo.controller
 
-import com.teamsparta.mini5foodfeed.common.dto.CustomUser
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.service.TodoService
 import jakarta.validation.Valid
@@ -41,8 +40,7 @@ class TodoController(
     @PreAuthorize("hasRole('USER')")
     @PostMapping
     fun createTodo(@Valid @RequestBody createTodoRequest: CreateTodoRequest): ResponseEntity<TodoResponse> {
-        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(createTodoRequest, userId))
+        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(createTodoRequest))
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -51,15 +49,14 @@ class TodoController(
         @PathVariable todoId: Long,
         @Valid @RequestBody updateTodoRequest: UpdateTodoRequest
     ): ResponseEntity<TodoResponse> {
-        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest, userId))
+
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest))
     }
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{todoId}")
     fun deleteTodo(@PathVariable todoId: Long): ResponseEntity<Unit> {
-        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-        todoService.deleteTodo(todoId, userId)
+        todoService.deleteTodo(todoId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 

@@ -1,7 +1,6 @@
 package com.teamsparta.todo.domain.user.controller
 
 
-import com.teamsparta.mini5foodfeed.common.dto.CustomUser
 import com.teamsparta.todo.domain.user.dto.request.LoginRequest
 import com.teamsparta.todo.domain.user.dto.request.SignUpRequest
 import com.teamsparta.todo.domain.user.dto.request.UpdateUserProfileRequest
@@ -10,6 +9,7 @@ import com.teamsparta.todo.domain.user.dto.response.UserResponse
 import com.teamsparta.todo.domain.user.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
@@ -30,12 +30,12 @@ class UserController(
             .status(HttpStatus.OK)
             .body(userService.signUp(signUpRequest))
     }
+
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/info")
     fun updateUserProfile(@RequestBody updateUserProfileRequest: UpdateUserProfileRequest):ResponseEntity<UserResponse>{
-        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-        updateUserProfileRequest.id = userId
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userService.updateUserProfile(userId,updateUserProfileRequest))
+            .body(userService.updateUserProfile(updateUserProfileRequest))
     }
 }

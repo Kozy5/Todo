@@ -1,4 +1,4 @@
-package com.teamsparta.todo.common.exception.dto
+package com.teamsparta.todo.domain.exception.dto
 
 data class ErrorResponse(
     val message: String?

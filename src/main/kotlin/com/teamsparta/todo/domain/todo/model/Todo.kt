@@ -28,10 +28,6 @@ class Todo(
     @Column(name = "write_date")
     var writeDate: LocalDateTime = LocalDateTime.now(),
 
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_user_role_user_id"))
-    @ManyToOne(fetch = FetchType.LAZY)
-    val user: User?,
-
     @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY,cascade = [CascadeType.ALL], orphanRemoval = true,)
     val comments: MutableList<Comment> = mutableListOf()
 

@@ -13,11 +13,11 @@ interface TodoService {
 
     fun getTodoByIdWithComment(todoId: Long): TodoWithCommentResponse
 
-    fun createTodo(request: CreateTodoRequest, userId:Long): TodoResponse
+    fun createTodo(request: CreateTodoRequest): TodoResponse
 
-    fun updateTodo(todoId: Long, request: UpdateTodoRequest, userId: Long): TodoResponse
+    fun updateTodo(todoId: Long, request: UpdateTodoRequest): TodoResponse
 
-    fun deleteTodo(todoId: Long, userId: Long)
+    fun deleteTodo(todoId: Long)
 
     fun isCompleteTodo(todoId: Long, request: IsCompleteTodoRequest): TodoResponse
 }
