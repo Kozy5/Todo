@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*
 class TodoController(
     val todoService: TodoService
 ) {
+    @CrossOrigin(origins = ["*"])
     @GetMapping
     fun getTodos(
         @RequestParam(required = false) author: String?,
