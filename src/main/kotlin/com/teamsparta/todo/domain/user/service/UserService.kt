@@ -2,6 +2,7 @@ package com.teamsparta.todo.domain.user.service
 
 
 import com.teamsparta.todo.common.exception.NotFoundException
+import com.teamsparta.todo.common.status.ROLE
 import com.teamsparta.todo.domain.user.dto.request.LoginRequest
 import com.teamsparta.todo.domain.user.dto.request.SignUpRequest
 import com.teamsparta.todo.domain.user.dto.request.UpdateUserProfileRequest
@@ -9,9 +10,10 @@ import com.teamsparta.todo.domain.user.dto.response.LoginResponse
 import com.teamsparta.todo.domain.user.dto.response.UserResponse
 import com.teamsparta.todo.domain.user.exception.InvalidCredentialException
 import com.teamsparta.todo.domain.user.model.User
-import com.teamsparta.todo.common.UserRole
+import com.teamsparta.todo.domain.user.model.UserRole
 import com.teamsparta.todo.domain.user.model.toResponse
 import com.teamsparta.todo.domain.user.repository.UserRepository
+import com.teamsparta.todo.domain.user.repository.UserRoleRepository
 import com.teamsparta.todo.infra.security.jwt.JwtPlugin
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
     private val userRepository: UserRepository,
+    private val userRoleRepository: UserRoleRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin
 ) {
@@ -28,15 +31,15 @@ class UserService(
     fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findByEmail(request.email) ?: throw NotFoundException("user",null)
 
-        if (user.role.name != request.role || !passwordEncoder.matches(request.password, user.password)) {
-            throw InvalidCredentialException()
+        if (!userRepository.existsByEmail(request.email)){
+            throw InvalidCredentialException(request.email)
         }
 
         return LoginResponse(
             accessToken = jwtPlugin.generateAccessToken(
                 subject = user.id.toString(),
                 email = user.email,
-                role = user.role.name
+                role = user.userRole.toString()
             )
         )
     }
@@ -46,17 +49,17 @@ class UserService(
         if (userRepository.existsByEmail(request.email)) {
             throw IllegalStateException("Already exits email : ${request.email}")
         }
-        return userRepository.save(
+        val user = (
             User(
                 email = request.email,
                 password = passwordEncoder.encode(request.password),
                 nickname = request.nickname,
-                role = when (request.role) {
-                    UserRole.USER.name -> UserRole.USER
-                    else -> throw IllegalStateException("Invalid role : $request.role")
-                }
             )
-        ).toResponse()
+        )
+        userRepository.save(user)
+        val userRole:UserRole = UserRole(null, ROLE.USER,user)
+        userRoleRepository.save(userRole)
+        return user.toResponse()
     }
 
     @Transactional

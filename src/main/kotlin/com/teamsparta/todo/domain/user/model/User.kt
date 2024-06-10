@@ -24,7 +24,7 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "users")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     val userRole: List<UserRole>? = null
 }
 fun User.toResponse(): UserResponse {

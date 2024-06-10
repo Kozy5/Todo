@@ -1,5 +1,6 @@
 package com.teamsparta.todo.infra.security.jwt
 
+import com.teamsparta.todo.common.status.ROLE
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -25,17 +26,25 @@ class JwtAuthenticationFilter(
             jwtPlugin.validateToken(jwt)
                 .onSuccess {
                     val userId = it.payload.subject.toLong()
-                    val role = it.payload.get("role",String::class.java)
-                    val email = it.payload.get("email",String::class.java)
+                    val roles = it.payload.get("roles", List::class.java)?.map { role ->
+                        ROLE.valueOf(role as String)
+                    }?.toSet() ?: emptySet()
+
+                    val email = it.payload.get("email", String::class.java)
+
+                    val roleStrings = roles.map { it.name }.toSet()
+
                     val principal = UserPrincipal(
                         id = userId,
                         email = email,
-                        roles = setOf(role)
+                        roles = roleStrings
                     )
+
                     val authentication: Authentication = JwtAuthenticationToken(
                         principal = principal,
                         details = WebAuthenticationDetailsSource().buildDetails(request)
                     )
+
                     SecurityContextHolder.getContext().authentication = authentication
                 }
         }
@@ -46,5 +55,10 @@ class JwtAuthenticationFilter(
     private fun HttpServletRequest.getBearerToken(): String? {
         val headerValue = this.getHeader(HttpHeaders.AUTHORIZATION) ?: return null
         return Regex("^Bearer (.+?)$").find(headerValue)?.groupValues?.get(1)
+    }
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        val path = request.requestURI
+        return path == "/login" || path == "/signup"
     }
 }

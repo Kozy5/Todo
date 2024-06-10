@@ -67,6 +67,7 @@ class TodoServiceImpl(
 
     override fun deleteTodo(todoId: Long, userId: Long) {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
+        if (userId != todo.user!!.id) throw NotAuthenticationException("feed")
         todoRepository.delete(todo)
     }
 

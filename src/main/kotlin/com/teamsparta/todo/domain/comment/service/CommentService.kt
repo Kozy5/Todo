@@ -11,7 +11,7 @@ interface CommentService {
 
     fun createComment(todoId:Long,request: CreateCommentRequest): CommentResponse
 
-    fun updateComment(todoId:Long,commentId: Long, request: UpdateCommentRequest): CommentResponse
+    fun updateComment(todoId:Long,commentId: Long, request: UpdateCommentRequest, userId:Long): CommentResponse
 
-    fun deleteComment(todoId:Long,commentId: Long, request: DeleteCommentRequest)
+    fun deleteComment(todoId:Long,commentId: Long, request: DeleteCommentRequest, userId:Long)
 }

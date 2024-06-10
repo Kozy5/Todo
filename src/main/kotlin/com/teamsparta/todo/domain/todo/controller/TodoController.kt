@@ -1,6 +1,7 @@
 package com.teamsparta.todo.domain.todo.controller
 
-import com.teamsparta.mini5foodfeed.common.dto.CustomUser
+
+import com.teamsparta.todo.common.dto.CustomUser
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.service.TodoService
 import jakarta.validation.Valid
