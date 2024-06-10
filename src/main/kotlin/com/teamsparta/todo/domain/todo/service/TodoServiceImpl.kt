@@ -1,8 +1,8 @@
 package com.teamsparta.todo.domain.todo.service
 
-import com.teamsparta.todo.common.exception.NotAuthenticationException
+import com.teamsparta.todo.domain.exception.NotAuthenticationException
 import com.teamsparta.todo.domain.comment.repository.CommentRepository
-import com.teamsparta.todo.common.exception.NotFoundException
+import com.teamsparta.todo.domain.exception.NotFoundException
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.todo.model.toResponse
@@ -42,21 +42,20 @@ class TodoServiceImpl(
     }
 
 
-    override fun createTodo(request: CreateTodoRequest, userId: Long): TodoResponse {
-        val user: User? = userRepository.findByIdOrNull(userId)
+    override fun createTodo(request: CreateTodoRequest): TodoResponse {
+
         val todo = Todo(
             title = request.title,
             content = request.content,
-            author = request.author,
-            user = user
+            author = request.author
         )
         return todoRepository.save(todo).toResponse()
     }
 
     @Transactional
-    override fun updateTodo(todoId: Long, request: UpdateTodoRequest, userId: Long): TodoResponse {
+    override fun updateTodo(todoId: Long, request: UpdateTodoRequest): TodoResponse {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
-        if (userId != todo.user!!.id) throw NotAuthenticationException("feed")
+
         todo.title = request.title
         todo.content = request.content
         todo.author = request.author
@@ -65,7 +64,7 @@ class TodoServiceImpl(
     }
 
 
-    override fun deleteTodo(todoId: Long, userId: Long) {
+    override fun deleteTodo(todoId: Long) {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
         todoRepository.delete(todo)
     }

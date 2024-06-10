@@ -4,12 +4,13 @@ spring:
     username: postgres.vsndedkgqefqckcinvsd
     password: 98tq7qmc0DoeM0k9
   jpa:
+    hibernate:
+      ddl-auto: create
     properties:
-      hibernate:
         show_sql: true
         format_sql: true
         highlight_sql: true
-        ddl-auto: create
+
 logging:
   level:
     root: debug

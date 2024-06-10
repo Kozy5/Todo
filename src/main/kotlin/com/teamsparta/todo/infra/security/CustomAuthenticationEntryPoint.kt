@@ -1,7 +1,7 @@
 package com.teamsparta.todo.infra.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.teamsparta.todo.common.exception.dto.ErrorResponse
+import com.teamsparta.todo.domain.exception.dto.ErrorResponse
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.MediaType

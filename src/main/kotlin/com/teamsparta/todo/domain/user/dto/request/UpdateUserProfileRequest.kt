@@ -1,6 +1,6 @@
 package com.teamsparta.todo.domain.user.dto.request
 
 data class UpdateUserProfileRequest(
-    var id: Long?,
+    var email: String,
     val nickname:String
 )

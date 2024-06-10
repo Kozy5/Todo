@@ -1,4 +1,4 @@
-package com.teamsparta.todo.common.exception
+package com.teamsparta.todo.domain.exception
 
 
 data class NotFoundException(val modelName:String, val id: Long?):RuntimeException(
