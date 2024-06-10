@@ -5,6 +5,7 @@ import com.teamsparta.todo.domain.comment.model.Comment
 import com.teamsparta.todo.domain.comment.model.toResponse
 import com.teamsparta.todo.domain.todo.dto.TodoResponse
 import com.teamsparta.todo.domain.todo.dto.TodoWithCommentResponse
+import com.teamsparta.todo.domain.user.model.User
 import jakarta.persistence.*
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import java.time.LocalDateTime
@@ -26,6 +27,10 @@ class Todo(
 
     @Column(name = "write_date")
     var writeDate: LocalDateTime = LocalDateTime.now(),
+
+    @JoinColumn(foreignKey = ForeignKey(name = "fk_user_role_user_id"))
+    @ManyToOne(fetch = FetchType.LAZY)
+    val user: User?,
 
     @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY,cascade = [CascadeType.ALL], orphanRemoval = true,)
     val comments: MutableList<Comment> = mutableListOf()

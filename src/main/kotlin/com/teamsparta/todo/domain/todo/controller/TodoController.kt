@@ -1,5 +1,6 @@
 package com.teamsparta.todo.domain.todo.controller
 
+import com.teamsparta.mini5foodfeed.common.dto.CustomUser
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.service.TodoService
 import jakarta.validation.Valid
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/todos")
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*
 class TodoController(
     val todoService: TodoService
 ) {
+    @PreAuthorize("hasRole('USER')")
     @CrossOrigin(origins = ["*"])
     @GetMapping
     fun getTodos(
@@ -28,30 +32,38 @@ class TodoController(
         return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(author, pageable))
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{todoId}")
     fun getTodo(@PathVariable todoId: Long): ResponseEntity<TodoWithCommentResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(todoService.getTodoByIdWithComment(todoId))
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     fun createTodo(@Valid @RequestBody createTodoRequest: CreateTodoRequest): ResponseEntity<TodoResponse> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(createTodoRequest))
+        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(createTodoRequest, userId))
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{todoId}")
     fun updateTodo(
         @PathVariable todoId: Long,
         @Valid @RequestBody updateTodoRequest: UpdateTodoRequest
     ): ResponseEntity<TodoResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest))
+        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest, userId))
     }
 
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{todoId}")
     fun deleteTodo(@PathVariable todoId: Long): ResponseEntity<Unit> {
-        todoService.deleteTodo(todoId)
+        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        todoService.deleteTodo(todoId, userId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping("/{todoId}")
     fun isCompleteTodo(
         @PathVariable todoId: Long,

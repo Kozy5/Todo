@@ -1,12 +1,15 @@
 package com.teamsparta.todo.domain.todo.service
 
+import com.teamsparta.todo.common.exception.NotAuthenticationException
 import com.teamsparta.todo.domain.comment.repository.CommentRepository
-import com.teamsparta.todo.domain.exception.NotFoundException
+import com.teamsparta.todo.common.exception.NotFoundException
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.todo.model.toResponse
 import com.teamsparta.todo.domain.todo.model.toResponseWithComments
 import com.teamsparta.todo.domain.todo.repository.TodoRepository
+import com.teamsparta.todo.domain.user.model.User
+import com.teamsparta.todo.domain.user.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -17,7 +20,8 @@ import java.time.LocalDateTime
 @Service
 class TodoServiceImpl(
     private val todoRepository: TodoRepository,
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val userRepository: UserRepository
 ) : TodoService {
 
 
@@ -30,25 +34,29 @@ class TodoServiceImpl(
             return pageTodo.map { it.toResponse() }
         }
     }
+
     @Transactional
     override fun getTodoByIdWithComment(todoId: Long): TodoWithCommentResponse {
-        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
         return todo.toResponseWithComments()
     }
 
 
-    override fun createTodo(request: CreateTodoRequest): TodoResponse {
+    override fun createTodo(request: CreateTodoRequest, userId: Long): TodoResponse {
+        val user: User? = userRepository.findByIdOrNull(userId)
         val todo = Todo(
             title = request.title,
             content = request.content,
-            author = request.author
+            author = request.author,
+            user = user
         )
         return todoRepository.save(todo).toResponse()
     }
 
     @Transactional
-    override fun updateTodo(todoId: Long, request: UpdateTodoRequest): TodoResponse {
-        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
+    override fun updateTodo(todoId: Long, request: UpdateTodoRequest, userId: Long): TodoResponse {
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
+        if (userId != todo.user!!.id) throw NotAuthenticationException("feed")
         todo.title = request.title
         todo.content = request.content
         todo.author = request.author
@@ -57,14 +65,14 @@ class TodoServiceImpl(
     }
 
 
-    override fun deleteTodo(todoId: Long) {
-        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
+    override fun deleteTodo(todoId: Long, userId: Long) {
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
         todoRepository.delete(todo)
     }
 
     @Transactional
     override fun isCompleteTodo(todoId: Long, request: IsCompleteTodoRequest): TodoResponse {
-        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException(todoId)
+        val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
         todo.status = request.status
         return todo.toResponse()
     }

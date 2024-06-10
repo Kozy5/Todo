@@ -1,6 +1,7 @@
-package com.teamsparta.todo.domain.exception
+package com.teamsparta.todo.common.exception
 
-import com.teamsparta.todo.domain.exception.dto.ErrorResponse
+import com.teamsparta.todo.common.exception.dto.ErrorResponse
+import com.teamsparta.todo.domain.user.exception.InvalidCredentialException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -16,10 +17,24 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(message = e.message))
     }
 
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun hanIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponse>{
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(e.bindingResult.allErrors[0].defaultMessage))
+    }
+
+    @ExceptionHandler(InvalidCredentialException::class)
+    fun handleInvalidCredentialException(e: InvalidCredentialException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse(e.message))
     }
 }

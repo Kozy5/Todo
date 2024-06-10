@@ -1,17 +1,27 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres
+    username: postgres.vsndedkgqefqckcinvsd
+    password: 98tq7qmc0DoeM0k9
   jpa:
-    open-in-view: false
     properties:
       hibernate:
+        show_sql: true
         format_sql: true
         highlight_sql: true
-  application:
-    name: "todo"
+        ddl-auto: create
 logging:
   level:
+    root: debug
     org:
       hibernate:
-        SQL: debug
         orm:
           jdbc:
             bind: trace
+      springframework:
+        security: debug
+auth:
+  jwt:
+    issuer: team.sprata.com
+    secret: P04c8z41Hia5gJG3oeuFJMRYBB4Ws4aZ
+    accessTokenExpirationHour: 3600000

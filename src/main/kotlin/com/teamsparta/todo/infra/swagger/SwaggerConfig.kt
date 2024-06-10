@@ -1,4 +1,4 @@
-package moomoo.todo.infra.swagger
+package com.teamsparta.todo.infra.swagger
 
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
@@ -12,24 +12,27 @@ import org.springframework.context.annotation.Configuration
 class SwaggerConfig {
 
     @Bean
-    fun openAPI(): OpenAPI = OpenAPI()
-        .addSecurityItem(SecurityRequirement().addList("JWT Bearer Authentication")
-        )
-        .components(
-            Components().addSecuritySchemes(
-                "JWT Bearer Authentication",
-                SecurityScheme()
-                    .type(SecurityScheme.Type.HTTP)
-                    .scheme("Bearer")
-                    .bearerFormat("JWT")
-                    .`in`(SecurityScheme.In.HEADER)
-                    .name("Authorization")
+    fun openAPI():OpenAPI {
+        return OpenAPI()
+            .addSecurityItem(
+                SecurityRequirement().addList("Bearer Authentication")
             )
-        )
-        .info(
-            Info()
-                .title("ToDo API")
-                .description("ToDo API schema")
-                .version("2.0.0")
-        )
+            .components(
+                Components().addSecuritySchemes(
+                    "Bearer Authentication",
+                    SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("Bearer")
+                        .bearerFormat("JWT")
+                        .`in`(SecurityScheme.In.HEADER)
+                        .name("Authorization")
+                )
+            )
+            .info(
+                Info()
+                    .title("Todo API")
+                    .description("Todo API schema")
+                    .version("2.0.0")
+            )
+    }
 }

@@ -7,7 +7,7 @@ import com.teamsparta.todo.domain.comment.dto.UpdateCommentRequest
 import com.teamsparta.todo.domain.comment.model.Comment
 import com.teamsparta.todo.domain.comment.model.toResponse
 import com.teamsparta.todo.domain.comment.repository.CommentRepository
-import com.teamsparta.todo.domain.exception.InformationDifferentException
+import com.teamsparta.todo.common.exception.InformationDifferentException
 import com.teamsparta.todo.domain.todo.repository.TodoRepository
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
