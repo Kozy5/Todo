@@ -1,3 +1,3 @@
-package com.teamsparta.todo.common.exception
+package com.teamsparta.todo.domain.exception
 
 class InformationDifferentException : RuntimeException("password not matched with given password")

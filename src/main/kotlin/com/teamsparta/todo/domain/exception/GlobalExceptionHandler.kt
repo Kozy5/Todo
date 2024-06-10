@@ -1,6 +1,6 @@
-package com.teamsparta.todo.common.exception
+package com.teamsparta.todo.domain.exception
 
-import com.teamsparta.todo.common.exception.dto.ErrorResponse
+import com.teamsparta.todo.domain.exception.dto.ErrorResponse
 import com.teamsparta.todo.domain.user.exception.InvalidCredentialException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

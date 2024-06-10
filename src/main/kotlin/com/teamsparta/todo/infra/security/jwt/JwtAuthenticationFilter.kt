@@ -1,6 +1,5 @@
 package com.teamsparta.todo.infra.security.jwt
 
-import com.teamsparta.todo.common.status.ROLE
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -26,18 +25,13 @@ class JwtAuthenticationFilter(
             jwtPlugin.validateToken(jwt)
                 .onSuccess {
                     val userId = it.payload.subject.toLong()
-                    val roles = it.payload.get("roles", List::class.java)?.map { role ->
-                        ROLE.valueOf(role as String)
-                    }?.toSet() ?: emptySet()
-
+                    val role = it.payload.get("role",String::class.java)
                     val email = it.payload.get("email", String::class.java)
-
-                    val roleStrings = roles.map { it.name }.toSet()
 
                     val principal = UserPrincipal(
                         id = userId,
                         email = email,
-                        roles = roleStrings
+                        roles = setOf(role)
                     )
 
                     val authentication: Authentication = JwtAuthenticationToken(

@@ -19,5 +19,5 @@ interface TodoService {
 
     fun deleteTodo(todoId: Long, userId: Long)
 
-    fun isCompleteTodo(todoId: Long, request: IsCompleteTodoRequest): TodoResponse
+    fun isCompleteTodo(todoId: Long, request: IsCompleteTodoRequest, userId: Long): TodoResponse
 }

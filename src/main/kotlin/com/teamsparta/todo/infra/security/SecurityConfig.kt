@@ -29,10 +29,10 @@ class SecurityConfig(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers(
-                    "/login",
-                    "/signup",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**"
+                    "/v3/api-docs/**",
+                    "/login",
+                    "/signup"
                 ).permitAll()
                     .anyRequest().authenticated()
             }

@@ -1,9 +1,10 @@
 package com.teamsparta.todo.domain.todo.controller
 
 
-import com.teamsparta.todo.common.dto.CustomUser
+
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.service.TodoService
+import com.teamsparta.todo.infra.security.jwt.UserPrincipal
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Page
@@ -42,7 +43,7 @@ class TodoController(
     @PreAuthorize("hasRole('USER')")
     @PostMapping
     fun createTodo(@Valid @RequestBody createTodoRequest: CreateTodoRequest): ResponseEntity<TodoResponse> {
-        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val userId = (SecurityContextHolder.getContext().authentication.principal as UserPrincipal).id
         return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(createTodoRequest, userId))
     }
 
@@ -52,14 +53,14 @@ class TodoController(
         @PathVariable todoId: Long,
         @Valid @RequestBody updateTodoRequest: UpdateTodoRequest
     ): ResponseEntity<TodoResponse> {
-        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val userId = (SecurityContextHolder.getContext().authentication.principal as UserPrincipal).id
         return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest, userId))
     }
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{todoId}")
     fun deleteTodo(@PathVariable todoId: Long): ResponseEntity<Unit> {
-        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val userId = (SecurityContextHolder.getContext().authentication.principal as UserPrincipal).id
         todoService.deleteTodo(todoId, userId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
@@ -70,6 +71,7 @@ class TodoController(
         @PathVariable todoId: Long,
         @RequestBody isCompleteTodoRequest: IsCompleteTodoRequest
     ): ResponseEntity<TodoResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.isCompleteTodo(todoId, isCompleteTodoRequest))
+        val userId = (SecurityContextHolder.getContext().authentication.principal as UserPrincipal).id
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.isCompleteTodo(todoId, isCompleteTodoRequest, userId))
     }
 }

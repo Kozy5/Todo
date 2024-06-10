@@ -1,8 +1,7 @@
 package com.teamsparta.todo.domain.user.service
 
 
-import com.teamsparta.todo.common.exception.NotFoundException
-import com.teamsparta.todo.common.status.ROLE
+import com.teamsparta.todo.domain.exception.NotFoundException
 import com.teamsparta.todo.domain.user.dto.request.LoginRequest
 import com.teamsparta.todo.domain.user.dto.request.SignUpRequest
 import com.teamsparta.todo.domain.user.dto.request.UpdateUserProfileRequest
@@ -13,7 +12,6 @@ import com.teamsparta.todo.domain.user.model.User
 import com.teamsparta.todo.domain.user.model.UserRole
 import com.teamsparta.todo.domain.user.model.toResponse
 import com.teamsparta.todo.domain.user.repository.UserRepository
-import com.teamsparta.todo.domain.user.repository.UserRoleRepository
 import com.teamsparta.todo.infra.security.jwt.JwtPlugin
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val userRoleRepository: UserRoleRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin
 ) {
@@ -39,7 +36,7 @@ class UserService(
             accessToken = jwtPlugin.generateAccessToken(
                 subject = user.id.toString(),
                 email = user.email,
-                role = user.userRole.toString()
+                role = user.role.name
             )
         )
     }
@@ -49,17 +46,17 @@ class UserService(
         if (userRepository.existsByEmail(request.email)) {
             throw IllegalStateException("Already exits email : ${request.email}")
         }
-        val user = (
+        return userRepository.save(
             User(
                 email = request.email,
                 password = passwordEncoder.encode(request.password),
                 nickname = request.nickname,
+                role = when(request.role){
+                    UserRole.USER.name -> UserRole.USER
+                    else -> throw IllegalStateException("Invalid role : ${request.role} ")
+                }
             )
-        )
-        userRepository.save(user)
-        val userRole:UserRole = UserRole(null, ROLE.USER,user)
-        userRoleRepository.save(userRole)
-        return user.toResponse()
+        ).toResponse()
     }
 
     @Transactional
@@ -68,5 +65,4 @@ class UserService(
         user.nickname =  request.nickname
         return userRepository.save(user).toResponse()
     }
-
 }

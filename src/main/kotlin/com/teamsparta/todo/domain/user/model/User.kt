@@ -1,6 +1,7 @@
 package com.teamsparta.todo.domain.user.model
 
 
+import com.teamsparta.todo.domain.comment.model.Comment
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.user.dto.response.UserResponse
 import jakarta.persistence.*
@@ -17,20 +18,25 @@ class User(
     @Column(name = "password", nullable = false)
     val password: String,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    var todo: MutableList<Todo>? = null,
+    @Column(nullable = false)
+    val role: UserRole,
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = [CascadeType.ALL], orphanRemoval = true)
+    var todos: MutableList<Todo>? = null,
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = [CascadeType.ALL], orphanRemoval = true)
+    var comments: MutableList<Comment>? = null,
 ){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    val userRole: List<UserRole>? = null
 }
 fun User.toResponse(): UserResponse {
     return UserResponse(
         id = id!!,
         nickname = nickname,
-        email = email
+        email = email,
+        role = role.name
     )
 }

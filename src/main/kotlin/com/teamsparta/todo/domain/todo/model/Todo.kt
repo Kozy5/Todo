@@ -32,8 +32,8 @@ class Todo(
     @ManyToOne(fetch = FetchType.LAZY)
     val user: User?,
 
-    @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY,cascade = [CascadeType.ALL], orphanRemoval = true,)
-    val comments: MutableList<Comment> = mutableListOf()
+    @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY,cascade = [CascadeType.ALL], orphanRemoval = true)
+    val comments: MutableList<Comment>? = mutableListOf()
 
     ) {
     @Id
@@ -54,7 +54,7 @@ fun Todo.toResponse(): TodoResponse {
 
 fun Todo.toResponseWithComments():TodoWithCommentResponse{
     val commentsInDto: MutableList<CommentResponse> = mutableListOf()
-    for(i in comments){
+    for(i in comments!!){
         commentsInDto += i.toResponse()
     }
     return TodoWithCommentResponse(

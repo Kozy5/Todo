@@ -1,8 +1,8 @@
 package com.teamsparta.todo.domain.todo.service
 
-import com.teamsparta.todo.common.exception.NotAuthenticationException
+import com.teamsparta.todo.domain.exception.NotAuthenticationException
 import com.teamsparta.todo.domain.comment.repository.CommentRepository
-import com.teamsparta.todo.common.exception.NotFoundException
+import com.teamsparta.todo.domain.exception.NotFoundException
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.todo.model.toResponse
@@ -50,13 +50,14 @@ class TodoServiceImpl(
             author = request.author,
             user = user
         )
+        user?.todos?.add(todo)
         return todoRepository.save(todo).toResponse()
     }
 
     @Transactional
     override fun updateTodo(todoId: Long, request: UpdateTodoRequest, userId: Long): TodoResponse {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
-        if (userId != todo.user!!.id) throw NotAuthenticationException("feed")
+        if (userId != todo.user!!.id) throw NotAuthenticationException("todo")
         todo.title = request.title
         todo.content = request.content
         todo.author = request.author
@@ -67,13 +68,16 @@ class TodoServiceImpl(
 
     override fun deleteTodo(todoId: Long, userId: Long) {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
-        if (userId != todo.user!!.id) throw NotAuthenticationException("feed")
+        if (userId != todo.user!!.id) throw NotAuthenticationException("todo")
         todoRepository.delete(todo)
+        val comment = commentRepository.findByTodoId(todoId)
+        commentRepository.deleteAll(comment)
     }
 
     @Transactional
-    override fun isCompleteTodo(todoId: Long, request: IsCompleteTodoRequest): TodoResponse {
+    override fun isCompleteTodo(todoId: Long, request: IsCompleteTodoRequest, userId: Long): TodoResponse {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
+        if (userId != todo.user!!.id) throw NotAuthenticationException("todo")
         todo.status = request.status
         return todo.toResponse()
     }

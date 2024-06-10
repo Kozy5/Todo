@@ -26,7 +26,6 @@ class JwtPlugin(
 
     fun validateToken(jwt: String): Result<Jws<Claims>>{
         return kotlin.runCatching{
-
             Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt)
         }
     }
