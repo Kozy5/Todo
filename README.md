@@ -3,13 +3,13 @@
 ## 🔍 진행방식
 
 
-- 과제는  Step 1(필수 구현 사항)부터 Step 4(Step 2,3,4는 선택 구현 기능)까지로 구성되어 있다.
-- Step 1(필수 구현 사항)을 우선한다. (Spring,REST API에 친숙해지기 위한 연습 중점 가능하면 추가적으로 진행)
+- Step 3까지 목표로 하였으나 Step2에서 마무리
+
 
 ## ✉️ 과제 제출 방법
 
 - 과제 구현을 완료한 후 GitHub을 통해 제출해야 한다.
-- 제출 기한 : 05/24(금) 14시까지
+- 제출 기한 : 06/10(월) 14시까지
    
 
 ## ✔️ 환경 설정
@@ -20,7 +20,10 @@
 
 
 ## 🚀 기능 요구사항
+### [ 이번 과제 ]
+- Step3-1까지 도전하였으나 회원가입 로그인은 하였으나, 직접 작성한 할일, 댓글 / 수정, 삭제 구현이 아직 안되었습니다.
 
+### [ 이전 과제 ]
  ### 필수 구현 기능 (Step 1) / domain\todo\controller\TodoContoroller.kt 
 
 - [ ]  **할일카드 작성 기능**
@@ -396,29 +399,11 @@ package com.teamsparta.todo.domain.todo.controller
 - 삭제기능 성공: status 204 No Content
 - 작성, 수정기능 실패: status 400 Bad Request
   
-      
-## 과제에서 요구한 질문
-1. 수정, 삭제 API의 request를 어떤 방식으로 사용 하셨나요? (param, query, body)
-   -> @RequestBody
-   - URL Path에 todoId를 넣어 수정/삭제할 대상 구별
-   - 수정할 때 Body에 DTO(UpdateTaskRequest)로 감싸서 사용
-     </br>
-   
-2. RESTful한 API를 설계하셨나요? 어떤 부분이 그런가요? 어떤 부분이 그렇지 않나요?
-  - URI에 Reousrce의 이름만 표기 [ex) @RequestMapping("/todos") 특정 대상 조회 및 수정 삭제는 "/{todoId}"]
-  - 행동적인 표현은 HTTP Method를 통해서만 진행
-  - Resource 표현 데이터 구조 JSON 사용</br>
-  </br>
- ( 이런 부분들은 RESTful한 API설계라고 생각합니다. )
-   
-3. 적절한 관심사 분리를 적용하셨나요? (Controller, Service, Repository)
-   - Controller: 서버에 들어오는 Request Control
-   - Entity: DB에 저장할 데이터
-   - Repository: Entity에 접근
-   - Service: CRUD 기능 구현
-   
+
+
 ## Entity Relationship Diagram(ERD)
-![image](https://github.com/Kozy5/Todo/assets/96171308/f22945ba-fc65-49d4-a97a-289879a78fff)
+![image](https://github.com/Kozy5/Todo/assets/96171308/dedaf69e-7498-49d6-9ba5-fff8b05977ce)
+
 
 
 ## API 명세서
@@ -432,4 +417,8 @@ package com.teamsparta.todo.domain.todo.controller
 |Comment 생성|`POST`|`/todos/{todoId}/comments`|`CreateCommentRequest`|`CommentResponse`|
 |Comment 수정|`PUT`|`/todos/{todoId}/comments/{commentsId}`|`UpdateCommentRequest`|`CommentResponse`|
 |Comment 삭제|`DELETE`|`/todos/{todoId}/comments/{commentsId}`|||
+|User 회원가입|`POST`|`/signup`|`SignUpRequest`|`TodoResponse`|
+|User 로그인|`POST`|`/login`|`LoginRequest`|`LoginResponse`|
+|User 내 정보 수정|`PUT`|`/info`|`UpdateUserProfileRequest`|`TodoResponse`|
+
 
