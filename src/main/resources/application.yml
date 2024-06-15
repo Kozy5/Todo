@@ -4,12 +4,22 @@ spring:
     username: postgres.vsndedkgqefqckcinvsd
     password: 98tq7qmc0DoeM0k9
   jpa:
+    show-sql: true
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
-        highlight_sql: true
-        ddl-auto: create
+  jmx:
+    enabled: true
+  application:
+    admin:
+      enabled: true
+
+management:
+  endpoints:
+    jmx:
+      exposure:
+        include: "*"
+
 logging:
   level:
     root: debug
@@ -25,3 +35,5 @@ auth:
     issuer: team.sprata.com
     secret: P04c8z41Hia5gJG3oeuFJMRYBB4Ws4aZ
     accessTokenExpirationHour: 3600000
+
+

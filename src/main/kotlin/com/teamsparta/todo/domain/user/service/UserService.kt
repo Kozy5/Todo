@@ -51,10 +51,7 @@ class UserService(
                 email = request.email,
                 password = passwordEncoder.encode(request.password),
                 nickname = request.nickname,
-                role = when(request.role){
-                    UserRole.USER.name -> UserRole.USER
-                    else -> throw IllegalStateException("Invalid role : ${request.role} ")
-                }
+                role = UserRole.valueOf(request.role)
             )
         ).toResponse()
     }
