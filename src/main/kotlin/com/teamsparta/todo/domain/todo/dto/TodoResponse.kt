@@ -9,6 +9,7 @@ data class TodoResponse(
     val title: String,
     val content: String?,
     val author: String,
+    val comments: MutableList<Comment>?,
     val status: Boolean,
     val writeDate: LocalDateTime
 )

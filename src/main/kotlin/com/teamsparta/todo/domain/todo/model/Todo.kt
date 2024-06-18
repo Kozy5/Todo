@@ -47,6 +47,7 @@ fun Todo.toResponse(): TodoResponse {
         title = title,
         content = content,
         author = author,
+        comments = comments,
         status = status,
         writeDate = writeDate
     )
