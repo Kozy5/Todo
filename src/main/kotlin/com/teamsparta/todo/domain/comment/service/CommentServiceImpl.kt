@@ -30,6 +30,7 @@ class CommentServiceImpl(
             todo = todo,
             user = user
         )
+        todo.comments?.add(comment)
         return commentRepository.save(comment).toResponse()
     }
 
