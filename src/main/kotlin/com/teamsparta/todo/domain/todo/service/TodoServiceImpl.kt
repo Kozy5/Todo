@@ -10,6 +10,7 @@ import com.teamsparta.todo.domain.todo.model.toResponseWithComments
 import com.teamsparta.todo.domain.todo.repository.TodoRepository
 import com.teamsparta.todo.domain.user.model.User
 import com.teamsparta.todo.domain.user.repository.UserRepository
+import com.teamsparta.todo.infra.aop.StopWatch
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -35,13 +36,14 @@ class TodoServiceImpl(
         }
     }
 
-    @Transactional
+
     override fun getTodoByIdWithComment(todoId: Long): TodoWithCommentResponse {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
         return todo.toResponseWithComments()
     }
 
 
+    @StopWatch
     override fun createTodo(request: CreateTodoRequest, userId: Long): TodoResponse {
         val user: User? = userRepository.findByIdOrNull(userId)
         val todo = Todo(
@@ -54,6 +56,7 @@ class TodoServiceImpl(
         return todoRepository.save(todo).toResponse()
     }
 
+    @StopWatch
     @Transactional
     override fun updateTodo(todoId: Long, request: UpdateTodoRequest, userId: Long): TodoResponse {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
@@ -66,6 +69,7 @@ class TodoServiceImpl(
     }
 
 
+    @StopWatch
     override fun deleteTodo(todoId: Long, userId: Long) {
         val todo = todoRepository.findByIdOrNull(todoId) ?: throw NotFoundException("todo", todoId)
         if (userId != todo.user!!.id) throw NotAuthenticationException("todo")

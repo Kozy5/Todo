@@ -6,7 +6,10 @@ plugins {
 	kotlin("jvm") version "1.9.23"
 	kotlin("plugin.spring") version "1.9.23"
 	kotlin("plugin.noarg") version "1.8.22"
+	kotlin("kapt") version "1.8.22"
 }
+
+val queryDslVersion = "5.0.0"
 
 group = "com.teamsparta"
 version = "0.0.1-SNAPSHOT"
@@ -36,6 +39,9 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-api:0.12.3")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
+
+	kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
 
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -57,6 +63,8 @@ allOpen {
 	annotation("jakarta.persistence.MappedSuperclass")
 	annotation("jakarta.persistence.Embeddable")
 }
+
+
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
