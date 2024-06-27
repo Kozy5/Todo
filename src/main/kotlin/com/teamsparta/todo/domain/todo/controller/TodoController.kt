@@ -1,7 +1,6 @@
 package com.teamsparta.todo.domain.todo.controller
 
 
-
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.service.TodoService
 import com.teamsparta.todo.infra.security.jwt.UserPrincipal
@@ -22,6 +21,14 @@ import org.springframework.web.bind.annotation.*
 class TodoController(
     val todoService: TodoService
 ) {
+
+    @GetMapping("/search")
+    fun searchTodoList(@RequestParam(value = "title") title: String): ResponseEntity<List<TodoResponse>> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(todoService.searchTodoList(title))
+    }
+
     @PreAuthorize("hasRole('USER')")
     @CrossOrigin(origins = ["*"])
     @GetMapping
@@ -72,6 +79,7 @@ class TodoController(
         @RequestBody isCompleteTodoRequest: IsCompleteTodoRequest
     ): ResponseEntity<TodoResponse> {
         val userId = (SecurityContextHolder.getContext().authentication.principal as UserPrincipal).id
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.isCompleteTodo(todoId, isCompleteTodoRequest, userId))
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(todoService.isCompleteTodo(todoId, isCompleteTodoRequest, userId))
     }
 }

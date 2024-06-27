@@ -7,6 +7,7 @@ import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.todo.model.toResponse
 import com.teamsparta.todo.domain.todo.model.toResponseWithComments
+import com.teamsparta.todo.domain.todo.repository.QueryDslTodoRepository
 import com.teamsparta.todo.domain.todo.repository.TodoRepository
 import com.teamsparta.todo.domain.user.model.User
 import com.teamsparta.todo.domain.user.repository.UserRepository
@@ -21,9 +22,14 @@ import java.time.LocalDateTime
 @Service
 class TodoServiceImpl(
     private val todoRepository: TodoRepository,
+    private val queryDslTodoRepository: QueryDslTodoRepository,
     private val commentRepository: CommentRepository,
     private val userRepository: UserRepository
 ) : TodoService {
+
+    override fun searchTodoList(title: String): List<TodoResponse>? {
+        return queryDslTodoRepository.searchTodoListByTitle(title).map { it.toResponse() }
+    }
 
 
     override fun getAllTodoList(author: String?, pageable: Pageable): Page<TodoResponse> {
@@ -85,4 +91,6 @@ class TodoServiceImpl(
         todo.status = request.status
         return todo.toResponse()
     }
+
+
 }

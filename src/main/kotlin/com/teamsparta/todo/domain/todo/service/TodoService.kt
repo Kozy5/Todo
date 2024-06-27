@@ -20,4 +20,7 @@ interface TodoService {
     fun deleteTodo(todoId: Long, userId: Long)
 
     fun isCompleteTodo(todoId: Long, request: IsCompleteTodoRequest, userId: Long): TodoResponse
+
+    fun searchTodoList(title: String): List<TodoResponse>?
+
 }
