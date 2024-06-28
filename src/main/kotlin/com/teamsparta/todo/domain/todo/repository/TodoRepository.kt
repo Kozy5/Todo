@@ -5,6 +5,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface TodoRepository : JpaRepository<Todo, Long> {
+interface TodoRepository : JpaRepository<Todo, Long>, CustomTodoRepository {
     fun findByAuthor(author: String, pageable: Pageable): Page<Todo>
 }

@@ -7,7 +7,7 @@ import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.todo.model.toResponse
 import com.teamsparta.todo.domain.todo.model.toResponseWithComments
-import com.teamsparta.todo.domain.todo.repository.QueryDslTodoRepository
+import com.teamsparta.todo.domain.todo.repository.TodoRepositoryImpl
 import com.teamsparta.todo.domain.todo.repository.TodoRepository
 import com.teamsparta.todo.domain.user.model.User
 import com.teamsparta.todo.domain.user.repository.UserRepository
@@ -15,24 +15,26 @@ import com.teamsparta.todo.infra.aop.StopWatch
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.data.web.PageableDefault
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDateTime
 
 @Service
 class TodoServiceImpl(
     private val todoRepository: TodoRepository,
-    private val queryDslTodoRepository: QueryDslTodoRepository,
     private val commentRepository: CommentRepository,
     private val userRepository: UserRepository
 ) : TodoService {
 
     override fun searchTodoList(title: String): List<TodoResponse>? {
-        return queryDslTodoRepository.searchTodoListByTitle(title).map { it.toResponse() }
+        return todoRepository.searchTodoListByTitle(title).map { it.toResponse() }
     }
 
 
-    override fun getAllTodoList(author: String?, pageable: Pageable): Page<TodoResponse> {
+    override fun getAllTodoList(
+        author: String?, pageable: Pageable): Page<TodoResponse> {
         if (author != null) {
             val pageTodo: Page<Todo> = todoRepository.findByAuthor(author, pageable)
             return pageTodo.map { it.toResponse() }

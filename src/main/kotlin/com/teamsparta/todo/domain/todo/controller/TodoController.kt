@@ -35,10 +35,14 @@ class TodoController(
     fun getTodos(
         @RequestParam(required = false) author: String?,
         @ParameterObject
-        @PageableDefault(size = 10, sort = ["writeDate"], direction = Sort.Direction.DESC)
-        pageable: Pageable
+        @PageableDefault(
+            size = 10,
+            sort = ["writeDate"],
+            direction = Sort.Direction.DESC
+        ) pageable: Pageable,
+        @RequestParam(value = "status", required = false) status: String?
     ): ResponseEntity<Page<TodoResponse>> {
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(author, pageable))
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(author, pageable, status))
     }
 
     @PreAuthorize("hasRole('USER')")

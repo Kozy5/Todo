@@ -6,11 +6,11 @@ import com.teamsparta.todo.infra.querydsl.QueryDslSupport
 import org.springframework.stereotype.Repository
 
 @Repository
-class QueryDslTodoRepository : QueryDslSupport() {
+class TodoRepositoryImpl : QueryDslSupport(), CustomTodoRepository {
 
     private val todo = QTodo.todo
 
-    fun searchTodoListByTitle(title: String): List<Todo> {
+    override fun searchTodoListByTitle(title: String): List<Todo> {
         return queryFactory.selectFrom(todo)
             .where(todo.title.containsIgnoreCase(title))
             .fetch()
