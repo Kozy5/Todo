@@ -8,18 +8,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  jmx:
-    enabled: true
-  application:
-    admin:
-      enabled: true
-
-management:
-  endpoints:
-    jmx:
-      exposure:
-        include: "*"
-
 logging:
   level:
     root: debug
