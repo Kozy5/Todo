@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable
 
 
 interface TodoService {
-    fun getAllTodoList(author: String?, pageable: Pageable, status: String?): Page<TodoResponse>
+    fun getAllTodoList(pageable: Pageable, status: String): Page<TodoResponse>
 
     fun getTodoByIdWithComment(todoId: Long): TodoWithCommentResponse
 

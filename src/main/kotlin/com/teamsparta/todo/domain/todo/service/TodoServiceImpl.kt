@@ -34,14 +34,11 @@ class TodoServiceImpl(
 
 
     override fun getAllTodoList(
-        author: String?, pageable: Pageable): Page<TodoResponse> {
-        if (author != null) {
-            val pageTodo: Page<Todo> = todoRepository.findByAuthor(author, pageable)
-            return pageTodo.map { it.toResponse() }
-        } else {
-            val pageTodo: Page<Todo> = todoRepository.findAll(pageable)
-            return pageTodo.map { it.toResponse() }
-        }
+        pageable: Pageable, status: String
+    ): Page<TodoResponse> {
+        val pageTodo: Page<Todo> = todoRepository.findByAuthor(pageable, status)
+        return pageTodo.map { it.toResponse() }
+
     }
 
 

@@ -33,7 +33,6 @@ class TodoController(
     @CrossOrigin(origins = ["*"])
     @GetMapping
     fun getTodos(
-        @RequestParam(required = false) author: String?,
         @ParameterObject
         @PageableDefault(
             size = 10,
@@ -42,7 +41,7 @@ class TodoController(
         ) pageable: Pageable,
         @RequestParam(value = "status", required = false) status: String?
     ): ResponseEntity<Page<TodoResponse>> {
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(author, pageable, status))
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(pageable, status))
     }
 
     @PreAuthorize("hasRole('USER')")
