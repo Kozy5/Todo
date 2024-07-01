@@ -1,5 +1,5 @@
 package com.teamsparta.todo.domain.user.exception
 
 data class InvalidCredentialException(
-    override val message: String? = "The credential is invalid"
-):RuntimeException()
+    val phrase: String
+):RuntimeException("Invalid Credential: $phrase")

@@ -14,27 +14,27 @@ class GlobalExceptionHandler {
     fun handleModelNotFoundException(e: NotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
-            .body(ErrorResponse(message = e.message))
+            .body(ErrorResponse(message = e.message, "404"))
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun hanIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponse>{
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(ErrorResponse(e.message))
+            .body(ErrorResponse(e.message, "400"))
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(ErrorResponse(e.bindingResult.allErrors[0].defaultMessage))
+            .body(ErrorResponse(e.bindingResult.allErrors[0].defaultMessage, "400"))
     }
 
     @ExceptionHandler(InvalidCredentialException::class)
     fun handleInvalidCredentialException(e: InvalidCredentialException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .body(ErrorResponse(e.message))
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message, "400"))
     }
 }
