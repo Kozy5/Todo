@@ -23,8 +23,4 @@ data class SignUpRequest(
         message = "Username should be [4, 10] letters long, only with lowercase letters and numbers."
     )
     val nickname:String,
-
-
-    @field:NotBlank(message = "Password should not be blank")
-    val role:String
 )

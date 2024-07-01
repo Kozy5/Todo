@@ -18,9 +18,6 @@ class User(
     @Column(name = "password", nullable = false)
     val password: String,
 
-    @Column(name ="role", nullable = false)
-    val role: UserRole,
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = [CascadeType.ALL], orphanRemoval = true)
     var todos: MutableList<Todo>? = null,
 
@@ -36,7 +33,6 @@ fun User.toResponse(): UserResponse {
     return UserResponse(
         id = id!!,
         nickname = nickname,
-        email = email,
-        role = role.name
+        email = email
     )
 }

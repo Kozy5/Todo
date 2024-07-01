@@ -10,9 +10,9 @@ import com.teamsparta.todo.domain.user.dto.response.LoginResponse
 import com.teamsparta.todo.domain.user.dto.response.UserResponse
 import com.teamsparta.todo.domain.user.service.UserService
 import com.teamsparta.todo.infra.security.jwt.UserPrincipal
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
@@ -22,10 +22,10 @@ class UserController(
 ) {
 
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequest):ResponseEntity<LoginResponse>{
+    fun login(@RequestBody request: LoginRequest, response: HttpServletResponse):ResponseEntity<LoginResponse>{
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userService.login(request))
+            .body(userService.login(request, response))
     }
 
 
@@ -36,7 +36,7 @@ class UserController(
             .body(userService.signUp(signUpRequest))
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @PutMapping("/info")
     fun updateUserProfile(@RequestBody updateUserProfileRequest: UpdateUserProfileRequest):ResponseEntity<UserResponse>{
         val userId = (SecurityContextHolder.getContext().authentication.principal as UserPrincipal).id

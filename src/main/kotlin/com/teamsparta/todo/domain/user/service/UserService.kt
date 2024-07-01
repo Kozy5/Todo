@@ -9,11 +9,13 @@ import com.teamsparta.todo.domain.user.dto.response.LoginResponse
 import com.teamsparta.todo.domain.user.dto.response.UserResponse
 import com.teamsparta.todo.domain.user.exception.InvalidCredentialException
 import com.teamsparta.todo.domain.user.model.User
-import com.teamsparta.todo.domain.user.model.UserRole
 import com.teamsparta.todo.domain.user.model.toResponse
 import com.teamsparta.todo.domain.user.repository.UserRepository
 import com.teamsparta.todo.infra.security.jwt.JwtPlugin
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.transaction.Transactional
+import org.aspectj.weaver.tools.cache.SimpleCacheFactory.path
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -25,33 +27,37 @@ class UserService(
     private val jwtPlugin: JwtPlugin
 ) {
 
-    fun login(request: LoginRequest): LoginResponse {
-        val user = userRepository.findByEmail(request.email) ?: throw NotFoundException("user",null)
+    fun login(request: LoginRequest, response: HttpServletResponse): LoginResponse {
+        val user = userRepository.findByEmail(request.email) ?: throw NotFoundException("user",request.email)
 
         if (!userRepository.existsByEmail(request.email)){
-            throw InvalidCredentialException(request.email)
+            throw InvalidCredentialException("이메일 혹은 비밀번호를 확인해주세요")
         }
 
-        return LoginResponse(
-            accessToken = jwtPlugin.generateAccessToken(
-                subject = user.id.toString(),
-                email = user.email,
-                role = user.role.name
-            )
-        )
+        val accessToken = jwtPlugin.generateAccessToken(user.id.toString(), user.nickname)
+
+        val cookie = Cookie("accessToken", accessToken)
+            .apply {
+                path = "/"
+                maxAge = 2 * 24 * 60 * 60
+                isHttpOnly = true
+            }
+
+        response.addCookie(cookie)
+
+        return LoginResponse(accessToken = accessToken)
     }
 
     @Transactional
     fun signUp(request: SignUpRequest): UserResponse {
         if (userRepository.existsByEmail(request.email)) {
-            throw IllegalStateException("Already exits email : ${request.email}")
+            throw IllegalStateException("이미 존재하는 이메일입니다.")
         }
         return userRepository.save(
             User(
                 email = request.email,
                 password = passwordEncoder.encode(request.password),
-                nickname = request.nickname,
-                role = UserRole.valueOf(request.role)
+                nickname = request.nickname
             )
         ).toResponse()
     }
