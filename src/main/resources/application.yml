@@ -5,6 +5,8 @@ spring:
     password: jqG20NCKMA3G5XFM
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
