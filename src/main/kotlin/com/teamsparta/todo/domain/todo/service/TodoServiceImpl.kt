@@ -28,16 +28,20 @@ class TodoServiceImpl(
     private val userRepository: UserRepository
 ) : TodoService {
 
-    override fun searchTodoList(title: String): List<TodoResponse>? {
-        return todoRepository.searchTodoListByTitle(title).map { it.toResponse() }
+    override fun searchTodoList(pageable: Pageable,
+                                title: String?,
+                                nickname: String?,
+                                status: Boolean?,
+                                daysAgo: Long?): Page<TodoResponse>? {
+        return todoRepository.searchTodoList(pageable, title, nickname, status, daysAgo).map { it.toResponse() }
     }
 
 
     override fun getAllTodoList(
-        pageable: Pageable, status: String
+        pageable: Pageable, status: Boolean?
     ): Page<TodoResponse> {
-        val pageTodo: Page<Todo> = todoRepository.findByAuthor(pageable, status)
-        return pageTodo.map { it.toResponse() }
+
+        return todoRepository.findByPageableAndStatus(pageable, status).map{ it.toResponse()}
 
     }
 

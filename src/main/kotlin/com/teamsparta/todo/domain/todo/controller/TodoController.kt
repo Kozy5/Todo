@@ -23,14 +23,19 @@ class TodoController(
 ) {
 
     @GetMapping("/search")
-    fun searchTodoList(@RequestParam(value = "title") title: String): ResponseEntity<List<TodoResponse>> {
+    fun searchTodoList(
+        @PageableDefault(size = 12, sort = ["writeDate"], direction = Sort.Direction.DESC) pageable: Pageable,
+        @RequestParam title: String?,
+        @RequestParam nickname: String?,
+        @RequestParam status: Boolean?,
+        @RequestParam daysAgo: Long?
+    ): ResponseEntity<Page<TodoResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(todoService.searchTodoList(title))
+            .body(todoService.searchTodoList(pageable, title, nickname, status, daysAgo))
     }
 
     @PreAuthorize("hasRole('USER')")
-    @CrossOrigin(origins = ["*"])
     @GetMapping
     fun getTodos(
         @ParameterObject
@@ -39,7 +44,7 @@ class TodoController(
             sort = ["writeDate"],
             direction = Sort.Direction.DESC
         ) pageable: Pageable,
-        @RequestParam(value = "status", required = false) status: String?
+        @RequestParam(value = "status", required = false) status: Boolean?
     ): ResponseEntity<Page<TodoResponse>> {
         return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(pageable, status))
     }
