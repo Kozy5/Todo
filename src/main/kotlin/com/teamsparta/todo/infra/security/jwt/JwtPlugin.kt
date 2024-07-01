@@ -30,21 +30,17 @@ class JwtPlugin(
         }
     }
 
-    fun generateAccessToken(subject: String, email: String, role: String): String{
-        return generateToken(subject, email, role, accessExpiration)
+    fun generateAccessToken(subject: String, email: String): String{
+        return generateToken(subject, email, accessExpiration)
     }
 
-    private fun generateToken(subject: String, email: String, role: String, accessExpiration: Date): String {
-        val claims: Claims = Jwts.claims()
-            .add(mapOf("role" to role, "email" to email))
-            .build()
-
+    private fun generateToken(subject: String, email: String, accessExpiration: Date): String {
         return Jwts.builder()
             .subject(subject)
             .issuer(issuer)
             .issuedAt(now)
             .expiration(accessExpiration)
-            .claims(claims)
+            .claims(mapOf("email" to email))
             .signWith(key)
             .compact()
     }
