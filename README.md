@@ -1,15 +1,20 @@
-# 과제 - Todo(REST API 구현)
+# 과제 - Todo(개선 과제)
 
 ## 🔍 진행방식
 
 
-- Step 3까지 목표로 하였으나 Step2에서 마무리
+1. Controller, Service 패키지 내 클래스 개선
+2. JPA 심화 기술을 사용하여 검색기능 고도화
+3. 코드를 체크할 수 있는 테스트 코드 작성
+4. AWS 를 활용한 기능 추가 및 배포
+
+- 총 4개의 step중 step3에 일부까지만 진행(UserControllerTest만 진행)
 
 
 ## ✉️ 과제 제출 방법
 
 - 과제 구현을 완료한 후 GitHub을 통해 제출해야 한다.
-- 제출 기한 : 06/10(월) 14시까지
+- 제출 기한 : 07/01(월) 14시까지
    
 
 ## ✔️ 환경 설정
@@ -21,7 +26,409 @@
 
 ## 🚀 기능 요구사항
 ### [ 이번 과제 ]
-- Step3-1까지 도전하였으나 회원가입 로그인은 하였으나, 직접 작성한 할일, 댓글 / 수정, 삭제 구현이 아직 안되었습니다.
+- 총 4개의 step중 step3에 일부까지만 진행(UserControllerTest만 진행)
+ ###  Controller, Service 패키지 내 클래스 개선 (Step 1)
+ - [ ]  **Controller, Service 패키지 내 클래스 개선**
+        
+    - 1.Controller Advice 로 예외 공통화 처리하기
+    - 2.Service 인터페이스와 구현체 분리하여 추상화 하기
+
+##### Controller Advice 로 예외 공통화 처리하기
+``` kotlin
+package com.teamsparta.todo.domain.exception
+
+@RestControllerAdvice
+class GlobalExceptionHandler {
+    @ExceptionHandler(NotFoundException::class)
+    fun handleModelNotFoundException(e: NotFoundException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(ErrorResponse(message = e.message, "404"))
+    }
+
+    @ExceptionHandler(NotAuthenticationException::class)
+    fun handleNotAuthenticatedException(e: NotAuthenticationException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse(message = e.message,"401"))
+    }
+
+
+    @ExceptionHandler(InvalidCredentialException::class)
+    fun handleInvalidCredentialException(e: InvalidCredentialException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message, "400"))
+    }
+}
+```
+위와 같이 GlobalExceptionHandler(RestControllerAdvice)를 통해 예외 공통화 처리
+
+##### Service 인터페이스와 구현체 분리하여 추상화 하기
+- Todo, Comment, User 모두 Service 부분을 인터페이스와 구현체(ServiceImpl)로 구성하였습니다.
+
+
+- [ ]  **CustomException 정의 및 SpringAOP 적용**
+        
+    - 1.CustomException 정의
+
+    - 2.Spring AOP 적용
+     
+##### CustomException 정의
+- RuntimeException을 상속받는  NotFoundException이라는 CustomException을 만들었습니다.
+- 
+##### Spring AOP 적용
+- StopWatch AOP를 만들어 Todo Service 로직 중 생성(createTodo), 수정(UpdateTodo), 삭제(deleteTodo) 3가지 기능에 대해 실행 속도를 확인하는데에 사용했습니다.
+     
+ ###  JPA 심화 기술을 사용하여 검색기능 고도화 (Step 2)
+  - [ ]  **QueryDSL 을 사용하여 검색 기능 만들기**
+       - 다양한 조건을 동적 쿼리로 처리하는 부분이 검색기능입니다.
+
+
+- [ ]  **Pageable 을 사용하여 페이징 및 정렬 기능 만들기**
+```kotlin
+package com.teamsparta.todo.domain.todo.repository
+
+...~
+
+@Repository
+class TodoRepositoryImpl : QueryDslSupport(), CustomTodoRepository {
+
+    private val todo = QTodo.todo
+    private val user = QUser.user
+
+...~
+    override fun findByPageableAndStatus(pageable: Pageable, status: Boolean?): Page<Todo> {
+        val whereClause = BooleanBuilder()
+        status?.let{ whereClause.and(todo.status.eq(status))}
+
+        val totalCount = queryFactory.select(todo.count()).from(todo).where(whereClause).fetchOne() ?: 0L
+
+        val query = queryFactory.selectFrom(todo)
+            .where(whereClause)
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+
+        if(pageable.sort.isSorted){
+            when(pageable.sort.first()?.property){
+                "writeDate" -> query.orderBy(todo.writeDate.asc())
+                "title" -> query.orderBy(todo.id.asc())
+                else -> query.orderBy(todo.id.desc())
+            }
+        }
+
+        val contents = query.fetch()
+
+        return PageImpl(contents, pageable, totalCount)
+    }
+
+
+}
+```
+
+
+- [ ]  **다양한 조건을 동적 쿼리로 처리하기**
+
+```kotlin
+package com.teamsparta.todo.domain.todo.repository
+
+...~
+@Repository
+class TodoRepositoryImpl : QueryDslSupport(), CustomTodoRepository {
+
+    private val todo = QTodo.todo
+    private val user = QUser.user
+
+    override fun searchTodoList(
+        pageable: Pageable,
+        title: String?,
+        author: String?,
+        status: Boolean?,
+        daysAgo: Long?
+    ): Page<Todo> {
+
+        val totalCount = queryFactory.select(todo.count())
+            .from(todo)
+            .where(
+                titleContains(title),
+                authorEq(author),
+                statusEq(status),
+                createdAfter(daysAgo)
+            )
+            .fetchOne() ?: 0L
+
+        val sort = if(pageable.sort.isSorted){
+            when(pageable.sort.first()?.property){
+                "writeDate" -> todo.writeDate.asc()
+                "title" -> todo.id.asc()
+                else -> todo.id.desc()
+            }
+        }else{
+            todo.id.desc()
+        }
+
+        val todoList = queryFactory.selectFrom(todo)
+            .leftJoin(todo.user, user).fetchJoin()
+            .where(
+                titleContains(title),
+                authorEq(author),
+                statusEq(status),
+                createdAfter(daysAgo)
+            )
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .orderBy(sort)
+            .fetch()
+
+
+        return PageImpl(todoList, pageable, totalCount)
+    }
+
+    private fun titleContains(title: String?): BooleanExpression? {
+        return if (title != null) {
+            todo.title.containsIgnoreCase(title)
+        } else {
+            null
+        }
+    }
+
+    private fun authorEq(author: String?): BooleanExpression? {
+        return if (author != null) {
+            todo.user.nickname.eq(author)
+        } else {
+            null
+        }
+    }
+
+    private fun statusEq(status: Boolean?): BooleanExpression? {
+        return if (status != null) {
+            todo.status.eq(status)
+        } else {
+            null
+        }
+    }
+
+    private fun createdAfter(daysAgo: Long?): BooleanExpression? {
+        return if (daysAgo != null) {
+            todo.writeDate.after(LocalDateTime.now().minusDays(daysAgo))
+        } else {
+            null
+        }
+    }
+...~
+}
+```
+ ###  코드를 체크할 수 있는 테스트 코드 작성 (Step 3)
+  - [ ]  ** Controller 테스트 코드 작성하기**
+        - UserControllerTest만 진행
+```kotlin
+package com.teamsparta.todo.domain.user.controller
+
+...~
+@SpringBootTest
+@AutoConfigureMockMvc
+@ExtendWith(MockKExtension::class)
+@ActiveProfiles("test")
+class UserControllerTest @Autowired constructor(
+    private val mockMvc: MockMvc, private val jwtPlugin: JwtPlugin,
+
+    @MockkBean
+    private val userService: UserServiceImpl
+) : DescribeSpec({
+    extension(SpringExtension)
+
+    afterContainer {
+        clearAllMocks()
+    }
+
+    describe("POST /signup 은") {
+        context("유효한 회원가입 요청을 보내면") {
+            it("201 status code와 UserResponse를 반환해야한다.") {
+                val email = "email"
+                val password = "password"
+                val nickname = "nickname"
+
+
+                every { userService.signUp(any()) } returns UserResponse(
+                    id = 1L,
+                    email = email,
+                    nickname = nickname,
+
+                )
+
+                val requestBody =
+                    """{"email":"$email" "nickname":"$nickname","password":"$password"}"""
+
+                val result = mockMvc.perform(
+                    post("/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                ).andReturn()
+
+                val responseDto = jacksonObjectMapper().readValue(
+                    result.response.getContentAsString(Charsets.UTF_8),
+                    UserResponse::class.java
+                )
+
+                result.response.status shouldBe 201
+
+                responseDto.id shouldBe 1L
+                responseDto.nickname shouldBe nickname
+            }
+        }
+
+        context("중복된 닉네임으로 회원가입 요청을 보내면") {
+            it("400 status code와 ErrorResponse를 반환해야한다.") {
+                val email = "email"
+                val password = "password"
+                val nickname = "nickname"
+
+                every { userService.signUp(any()) } throws IllegalStateException("이미 존재하는 이메일입니다.")
+
+                val requestBody =
+                    """{"email":"$email" "nickname":"$nickname","password":"$password"}"""
+
+                val result = mockMvc.perform(
+                    post("/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                ).andReturn()
+
+                val responseDto = jacksonObjectMapper().readValue(
+                    result.response.getContentAsString(Charsets.UTF_8),
+                    ErrorResponse::class.java
+                )
+
+                result.response.status shouldBe 400
+                responseDto.message shouldBe "이미 존재하는 이메일입니다."
+                responseDto.errorCode shouldBe "400"
+            }
+        }
+    }
+
+    describe("POST /login 은") {
+        context("정상적인 로그인 요청을 보내면") {
+            it("200 status code와 토큰을 생성해 쿠키와 LoginResponse로 반환해야한다.") {
+                val email = "email"
+                val password = "password"
+
+                val accessToken = jwtPlugin.generateAccessToken(1.toString(), email)
+
+                val responseSlot = slot<HttpServletResponse>()
+
+                every { userService.login(any(), capture(responseSlot)) } answers {
+                    val response = responseSlot.captured
+                    val cookie = Cookie("accessToken", accessToken)
+                        .apply {
+                            path = "/"
+                            maxAge = 2 * 24 * 60 * 60
+                            isHttpOnly = true
+                        }
+
+                    response.addCookie(cookie)
+
+                    LoginResponse(
+                        accessToken = accessToken
+                    )
+                }
+
+                val requestBody = """{"email":"$email","password":"$password"}"""
+
+                val result = mockMvc.perform(
+                    post("/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                ).andExpect(status().isOk)
+                    .andExpect(cookie().exists("accessToken"))
+                    .andExpect(cookie().value("accessToken", accessToken))
+                    .andReturn()
+
+                val responseDto = jacksonObjectMapper().readValue(
+                    result.response.getContentAsString(Charsets.UTF_8),
+                    LoginResponse::class.java
+                )
+
+                responseDto.accessToken shouldBe accessToken
+
+            }
+        }
+
+        context("존재하지않는 이메일로 로그인 요청을 보내면") {
+            it("404 status code와 ErrorResponse를 반환해야한다.") {
+                val email = "email"
+                val password = "password"
+
+                val responseSlot = slot<HttpServletResponse>()
+
+                every {
+                    userService.login(
+                        any(),
+                        capture(responseSlot)
+                    )
+                } throws NotFoundException("User", email)
+
+                val requestBody = """{"email":"$email","password":"$password"}"""
+
+                val result = mockMvc.perform(
+                    post("/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                ).andReturn()
+
+                val responseDto = jacksonObjectMapper().readValue(
+                    result.response.getContentAsString(Charsets.UTF_8),
+                    ErrorResponse::class.java
+                )
+
+                result.response.status shouldBe 404
+                responseDto.message shouldBe "User not found with given id:$email"
+                responseDto.errorCode shouldBe "404"
+            }
+        }
+
+        context("잘못된 비밀번호로 로그인 요청을 보내면") {
+            it("400 status code와 ErrorResponse를 반환해야한다.") {
+                val email = "email"
+                val password = "password"
+
+                val responseSlot = slot<HttpServletResponse>()
+
+                every {
+                    userService.login(
+                        any(),
+                        capture(responseSlot)
+                    )
+                } throws InvalidCredentialException("이메일 혹은 비밀번호를 확인해주세요")
+
+                val requestBody = """{"email":"$email","password":"$password"}"""
+
+                val result = mockMvc.perform(
+                    post("/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                ).andReturn()
+
+                val responseDto = jacksonObjectMapper().readValue(
+                    result.response.getContentAsString(Charsets.UTF_8),
+                    ErrorResponse::class.java
+                )
+
+                result.response.status shouldBe 400
+                responseDto.message shouldBe "Invalid Credential: 이메일 혹은 비밀번호를 확인해주세요"
+                responseDto.errorCode shouldBe "400"
+            }
+        }
+    }
+})
+```
+
+
+ 
 
 ### [ 이전 과제 ]
  ### 필수 구현 기능 (Step 1) / domain\todo\controller\TodoContoroller.kt 
