@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*
 class CommentController(
     val commentService: CommentService
 ) {
-    @PreAuthorize("hasRole('USER')")
+
     @PostMapping()
     fun createComment(
         @PathVariable todoId: Long,
@@ -29,7 +29,7 @@ class CommentController(
             .body(commentService.createComment(todoId, createCommentRequest, userId))
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @PutMapping("/{commentId}")
     fun updateComment(
         @PathVariable todoId: Long,@PathVariable commentId: Long,
@@ -40,7 +40,7 @@ class CommentController(
             .body(commentService.updateComment(todoId, commentId, updateCommentRequest,userId))
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @DeleteMapping("/{commentId}")
     fun deleteComment(
         @PathVariable todoId: Long,

@@ -35,7 +35,7 @@ class TodoController(
             .body(todoService.searchTodoList(pageable, title, nickname, status, daysAgo))
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @GetMapping
     fun getTodos(
         @ParameterObject
@@ -49,20 +49,20 @@ class TodoController(
         return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodoList(pageable, status))
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @GetMapping("/{todoId}")
     fun getTodo(@PathVariable todoId: Long): ResponseEntity<TodoWithCommentResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(todoService.getTodoByIdWithComment(todoId))
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @PostMapping
     fun createTodo(@Valid @RequestBody createTodoRequest: CreateTodoRequest): ResponseEntity<TodoResponse> {
         val userId = (SecurityContextHolder.getContext().authentication.principal as UserPrincipal).id
         return ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(createTodoRequest, userId))
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @PutMapping("/{todoId}")
     fun updateTodo(
         @PathVariable todoId: Long,
@@ -72,7 +72,7 @@ class TodoController(
         return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(todoId, updateTodoRequest, userId))
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @DeleteMapping("/{todoId}")
     fun deleteTodo(@PathVariable todoId: Long): ResponseEntity<Unit> {
         val userId = (SecurityContextHolder.getContext().authentication.principal as UserPrincipal).id
@@ -80,7 +80,7 @@ class TodoController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @PatchMapping("/{todoId}")
     fun isCompleteTodo(
         @PathVariable todoId: Long,
