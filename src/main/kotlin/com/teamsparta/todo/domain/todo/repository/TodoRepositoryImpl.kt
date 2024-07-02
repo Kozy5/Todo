@@ -2,21 +2,14 @@ package com.teamsparta.todo.domain.todo.repository
 
 import com.querydsl.core.BooleanBuilder
 import com.querydsl.core.types.dsl.BooleanExpression
-import com.querydsl.core.types.dsl.Expressions
-import com.querydsl.jpa.impl.JPAQuery
-import com.teamsparta.todo.domain.comment.model.QComment
-import com.teamsparta.todo.domain.comment.model.QComment.comment
-import com.teamsparta.todo.domain.todo.dto.TodoResponse
 import com.teamsparta.todo.domain.todo.model.QTodo
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.user.model.QUser
-import com.teamsparta.todo.domain.user.model.QUser.user
 import com.teamsparta.todo.infra.querydsl.QueryDslSupport
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Repository

@@ -17,19 +17,13 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(message = e.message, "404"))
     }
 
-    @ExceptionHandler(IllegalArgumentException::class)
-    fun hanIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponse>{
+    @ExceptionHandler(NotAuthenticationException::class)
+    fun handleNotAuthenticatedException(e: NotAuthenticationException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(ErrorResponse(e.message, "400"))
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse(message = e.message,"401"))
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(ErrorResponse(e.bindingResult.allErrors[0].defaultMessage, "400"))
-    }
 
     @ExceptionHandler(InvalidCredentialException::class)
     fun handleInvalidCredentialException(e: InvalidCredentialException): ResponseEntity<ErrorResponse> {

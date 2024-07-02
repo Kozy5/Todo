@@ -8,7 +8,7 @@ import com.teamsparta.todo.domain.user.dto.request.SignUpRequest
 import com.teamsparta.todo.domain.user.dto.request.UpdateUserProfileRequest
 import com.teamsparta.todo.domain.user.dto.response.LoginResponse
 import com.teamsparta.todo.domain.user.dto.response.UserResponse
-import com.teamsparta.todo.domain.user.service.UserService
+import com.teamsparta.todo.domain.user.service.UserServiceImpl
 import com.teamsparta.todo.infra.security.jwt.UserPrincipal
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 class UserController(
-    private val userService: UserService
+    private val userService: UserServiceImpl
 ) {
 
     @PostMapping("/login")
