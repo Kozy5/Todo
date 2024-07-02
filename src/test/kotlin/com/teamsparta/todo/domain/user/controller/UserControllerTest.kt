@@ -7,8 +7,7 @@ import com.teamsparta.todo.domain.exception.dto.ErrorResponse
 import com.teamsparta.todo.domain.user.dto.response.LoginResponse
 import com.teamsparta.todo.domain.user.dto.response.UserResponse
 import com.teamsparta.todo.domain.user.exception.InvalidCredentialException
-import com.teamsparta.todo.domain.user.exception.UserIdIllegalStateException
-import com.teamsparta.todo.domain.user.service.UserService
+import com.teamsparta.todo.domain.user.service.UserServiceImpl
 import com.teamsparta.todo.infra.security.jwt.JwtPlugin
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
@@ -38,7 +37,7 @@ class UserControllerTest @Autowired constructor(
     private val mockMvc: MockMvc, private val jwtPlugin: JwtPlugin,
 
     @MockkBean
-    private val userService: UserService
+    private val userService: UserServiceImpl
 ) : DescribeSpec({
     extension(SpringExtension)
 
@@ -89,7 +88,7 @@ class UserControllerTest @Autowired constructor(
                 val password = "password"
                 val nickname = "nickname"
 
-                every { userService.signUp(any()) } throws UserIdIllegalStateException("이미 존재하는 이메일입니다.")
+                every { userService.signUp(any()) } throws IllegalStateException("이미 존재하는 이메일입니다.")
 
                 val requestBody =
                     """{"email":"$email" "nickname":"$nickname","password":"$password"}"""
