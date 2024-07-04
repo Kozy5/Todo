@@ -9,7 +9,6 @@ import com.teamsparta.todo.domain.comment.service.CommentService
 import com.teamsparta.todo.infra.security.jwt.UserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
