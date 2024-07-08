@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit
 @SpringBootTest
 class TodoServiceTest(
     @Autowired private val todoService: TodoService,
-    @Autowired private val todoRepository: TodoRepository,
     @Autowired private val userRepository: UserRepository
 )
 {

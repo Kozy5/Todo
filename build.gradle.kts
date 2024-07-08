@@ -42,6 +42,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("io.lettuce.core:lettuce-core")
 
 	kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
