@@ -1,3 +1,4 @@
+import org.gradle.internal.classpath.Instrumented.systemProperty
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -43,7 +44,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	implementation("io.lettuce.core:lettuce-core")
+	implementation("io.lettuce:lettuce-core:6.3.2.RELEASE")
+
+	systemProperty("kotest.framework.classpath.scanning.config.disable", "true")
 
 	kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
