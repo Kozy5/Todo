@@ -1,31 +1,30 @@
 package com.teamsparta.todo.domain.todo.service
 
-import com.teamsparta.todo.domain.exception.NotAuthenticationException
 import com.teamsparta.todo.domain.comment.repository.CommentRepository
+import com.teamsparta.todo.domain.exception.NotAuthenticationException
 import com.teamsparta.todo.domain.exception.NotFoundException
 import com.teamsparta.todo.domain.todo.dto.*
 import com.teamsparta.todo.domain.todo.model.Todo
 import com.teamsparta.todo.domain.todo.model.toResponse
 import com.teamsparta.todo.domain.todo.model.toResponseWithComments
-import com.teamsparta.todo.domain.todo.repository.TodoRepositoryImpl
 import com.teamsparta.todo.domain.todo.repository.TodoRepository
-import com.teamsparta.todo.domain.user.model.User
 import com.teamsparta.todo.domain.user.repository.UserRepository
 import com.teamsparta.todo.infra.aop.StopWatch
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.data.web.PageableDefault
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
 @Service
 class TodoServiceImpl(
     private val todoRepository: TodoRepository,
     private val commentRepository: CommentRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val stringRedisTemplate: StringRedisTemplate
 ) : TodoService {
 
     override fun searchTodoList(pageable: Pageable,
@@ -51,17 +50,34 @@ class TodoServiceImpl(
         return todo.toResponseWithComments()
     }
 
+    override fun createTodoWithLock(request: CreateTodoRequest, userId: Long): TodoResponse {
+        val lockKey = "lock:createTodo:$userId"
+        val lockValue = System.currentTimeMillis().toString()
+
+        val acquired = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, 10, TimeUnit.SECONDS)
+
+        if (acquired == true) {
+            try {
+                val todo = createTodo(request, userId)
+                return todo
+            } finally {
+                stringRedisTemplate.delete(lockKey)
+            }
+        } else {
+            throw RuntimeException("Lock 사용 불가")
+        }
+    }
 
     @StopWatch
     override fun createTodo(request: CreateTodoRequest, userId: Long): TodoResponse {
-        val user: User? = userRepository.findByIdOrNull(userId)
+        val user = userRepository.findByIdOrNull(userId) ?: throw NotFoundException("user", userId)
         val todo = Todo(
             title = request.title,
             content = request.content,
             author = request.author,
             user = user
         )
-        user?.todos?.add(todo)
+        user.todos?.add(todo)
         return todoRepository.save(todo).toResponse()
     }
 

@@ -14,6 +14,8 @@ interface TodoService {
 
     fun getTodoByIdWithComment(todoId: Long): TodoWithCommentResponse
 
+    fun createTodoWithLock(request: CreateTodoRequest, userId: Long): TodoResponse
+
     fun createTodo(request: CreateTodoRequest, userId: Long): TodoResponse
 
     fun updateTodo(todoId: Long, request: UpdateTodoRequest, userId: Long): TodoResponse
